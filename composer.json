@@ -1,5 +1,5 @@
 {
-    "name": "craftzing/laravel-postmark-templates-notification-channel",
+    "name": "craftzing/laravel-postmark-notification-channel",
     "description": "Postmark Templates notification channel for Laravel",
     "keywords": [
         "php",
@@ -29,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Craftzing\\Laravel\\NotificationChannels\\PostmarkTemplates\\": "src"
+            "Craftzing\\Laravel\\NotificationChannels\\Postmark\\": "src"
         }
     },
     "config": {

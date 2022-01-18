@@ -1,10 +1,10 @@
 [![Laravel Lokalise webhooks](art/banner.jpg)](https://craftzing.com)
 
-![Quality assurance](https://github.com/craftzing/laravel-postmark-templates-notification-channel/workflows/Quality%20assurance/badge.svg)
-![Code style](https://github.com/craftzing/laravel-postmark-templates-notification-channel/workflows/Code%20style/badge.svg)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/881eb71372c1b12c18d5/test_coverage)](https://codeclimate.com/github/craftzing/laravel-postmark-templates-notification-channel/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/881eb71372c1b12c18d5/maintainability)](https://codeclimate.com/github/craftzing/laravel-postmark-templates-notification-channel/maintainability)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&color=4D6CB8)](https://github.com/craftzing/laravel-postmark-templates-notification-channel/blob/master/LICENSE)
+![Quality assurance](https://github.com/craftzing/laravel-postmark-notification-channel/workflows/Quality%20assurance/badge.svg)
+![Code style](https://github.com/craftzing/laravel-postmark-notification-channel/workflows/Code%20style/badge.svg)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/881eb71372c1b12c18d5/test_coverage)](https://codeclimate.com/github/craftzing/laravel-postmark-notification-channel/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/881eb71372c1b12c18d5/maintainability)](https://codeclimate.com/github/craftzing/laravel-postmark-notification-channel/maintainability)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&color=4D6CB8)](https://github.com/craftzing/laravel-postmark-notification-channel/blob/master/LICENSE)
 
 This package serves as a starting point to create a new Laravel package. Everything's in place to get you started 
 quickly:
@@ -15,8 +15,8 @@ quickly:
 - ...
 
 Perform a "search and replace" action for the following placeholders and update them with an according value:
-- `laravel-postmark-templates-notification-channel`: Please make sure to use lowercase and dashes as a separator (e.g. `my-package`)
-- `NotificationChannels\PostmarkTemplates`: Not that the default namespace is already set to be `Craftzing\Laravel` (e.g. `MyPackage`)
+- `laravel-postmark-notification-channel`: Please make sure to use lowercase and dashes as a separator (e.g. `my-package`)
+- `NotificationChannels\Postmark`: Not that the default namespace is already set to be `Craftzing\Laravel` (e.g. `MyPackage`)
 - `Postmark Templates notification channel for Laravel`
 - `Rémi Pelhate`
 - `remi.pelhate@craftzing.com`
@@ -46,7 +46,7 @@ Have an idea for a feature? Wanna improve the docs? Found a bug? Check out our [
 ## 💙 Thanks to...
 
 - [The entire Craftzing team](https://craftzing.com)
-- [All current and future contributors](https://github.com/creaftzing/laravel-postmark-templates-notification-channel/graphs/contributors)
+- [All current and future contributors](https://github.com/creaftzing/laravel-postmark-notification-channel/graphs/contributors)
 
 ## 🔑 License
 
