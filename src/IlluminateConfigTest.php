@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
@@ -13,6 +14,8 @@ use function config;
 
 final class IlluminateConfigTest extends IntegrationTestCase
 {
+    use WithFaker;
+
     protected bool $shouldFakeConfig = false;
 
     private function requiredConfig(array $overwrites = []): array
