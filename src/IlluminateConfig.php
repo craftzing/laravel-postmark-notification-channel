@@ -2,26 +2,61 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates;
+namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\AppMisconfigured;
 use Illuminate\Contracts\Config\Repository;
 
 final class IlluminateConfig implements Config
 {
-    private string $value;
+    private Repository $config;
+    private string $postmarkToken;
+    private string $defaultSenderEmail;
+    private string $defaultSenderName;
 
     public function __construct(Repository $config)
     {
-        $this->value = $this->resolveValue($config);
+        $this->config = $config;
+        $this->postmarkToken = $this->configValue(
+            'services.postmark.token',
+            fn () => AppMisconfigured::missingPostmarkToken(),
+        );
+        $this->defaultSenderEmail = $this->configValue(
+            'mail.from.address',
+            fn () => AppMisconfigured::missingDefaultSenderEmail(),
+        );
+        $this->defaultSenderName = $this->configValue(
+            'mail.from.name',
+            fn () => AppMisconfigured::missingDefaultSenderName(),
+        );
     }
 
-    private function resolveValue(Repository $config): string
+    private function configValue(string $configPath, callable $missingConfigException): string
     {
-        if (! ($value = $config->get('laravel-postmark-templates-notification-channel.value'))) {
-            throw AppMisconfigured::missingConfigValue();
+        if ($value = $this->config->get($configPath)) {
+            return $value;
         }
 
-        return $value;
+        throw $missingConfigException();
+    }
+
+    public function postmarkToken(): string
+    {
+        return $this->postmarkToken;
+    }
+
+    public function defaultSenderEmail(): string
+    {
+        return $this->defaultSenderEmail;
+    }
+
+    public function defaultSenderName(): string
+    {
+        return $this->defaultSenderName;
+    }
+
+    public function postmarkBaseUri(): ?string
+    {
+        return $this->config->get('services.postmark.base_uri');
     }
 }
