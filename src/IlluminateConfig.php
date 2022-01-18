@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates;
 
-use Craftzing\Laravel\:package_namespace\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions\AppMisconfigured;
 use Illuminate\Contracts\Config\Repository;
 
 final class IlluminateConfig implements Config
@@ -18,7 +18,7 @@ final class IlluminateConfig implements Config
 
     private function resolveValue(Repository $config): string
     {
-        if (! ($value = $config->get(':package_name.value'))) {
+        if (! ($value = $config->get('laravel-postmark-templates-notification-channel.value'))) {
             throw AppMisconfigured::missingConfigValue();
         }
 

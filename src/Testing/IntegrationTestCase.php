@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace\Testing;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Testing;
 
-use Craftzing\Laravel\:package_namespace\Exceptions\FakeExceptionHandler;
-use Craftzing\Laravel\:package_namespace\ServiceProvider;
-use Craftzing\Laravel\:package_namespace\Testing\Doubles\FakeConfig;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions\FakeExceptionHandler;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\ServiceProvider;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Testing\Doubles\FakeConfig;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;

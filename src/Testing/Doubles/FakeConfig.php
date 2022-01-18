@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace\Testing\Doubles;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Testing\Doubles;
 
-use Craftzing\Laravel\:package_namespace\Config;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 

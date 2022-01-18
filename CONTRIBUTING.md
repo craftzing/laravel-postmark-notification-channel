@@ -2,7 +2,7 @@ Contributing
 ===
 
 Contributions are welcome. If you want to ask or propose something, please 
-[create an issue](https://github.com/craftzing/:package_name/issues/new). If you want to contribute, please 
+[create an issue](https://github.com/craftzing/laravel-postmark-templates-notification-channel/issues/new). If you want to contribute, please 
 send in a pull request.
 
 ## ⤴️ Pull requests

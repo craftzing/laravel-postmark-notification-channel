@@ -11,7 +11,7 @@
         </exclude>
     </coverage>
     <testsuites>
-        <testsuite name=":package_name">
+        <testsuite name="laravel-postmark-templates-notification-channel">
             <directory suffix="Test.php">src/</directory>
         </testsuite>
     </testsuites>

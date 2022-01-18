@@ -1,13 +1,23 @@
 {
-    "name": "craftzing/:package_name",
-    "description": ":package_description",
-    "keywords": [],
+    "name": "craftzing/laravel-postmark-templates-notification-channel",
+    "description": "Postmark Templates notification channel for Laravel",
+    "keywords": [
+        "php",
+        "laravel",
+        "postmark",
+        "postmark-templates",
+        "laravel-notifications",
+        "laravel-notification-channels",
+        "notifications",
+        "laravel-7-package",
+        "laravel-8-package"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email"
+            "name": "Rémi Pelhate",
+            "email": "remi.pelhate@craftzing.com"
         }
     ],
     "require": {
@@ -19,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Craftzing\\Laravel\\:package_namespace\\": "src"
+            "Craftzing\\Laravel\\NotificationChannels\\PostmarkTemplates\\": "src"
         }
     },
     "config": {

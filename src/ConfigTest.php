@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates;
 
-use Craftzing\Laravel\:package_namespace\Exceptions\AppMisconfigured;
-use Craftzing\Laravel\:package_namespace\Testing\IntegrationTestCase;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ final class ConfigTest extends IntegrationTestCase
     public function misconfiguredApp(): Generator
     {
         yield 'Value is undefined' => [
-            [':package_name.value' => null],
+            ['laravel-postmark-templates-notification-channel.value' => null],
             AppMisconfigured::missingConfigValue(),
         ];
     }

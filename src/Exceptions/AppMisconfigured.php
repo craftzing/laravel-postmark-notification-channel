@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace\Exceptions;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions;
 
 use Exception;
 
@@ -12,7 +12,7 @@ final class AppMisconfigured extends Exception
     {
         return new self(
             'Please make sure to provide a valid value by either setting the ' .
-            '`:package_name.value` config or the according environment variable.'
+            '`laravel-postmark-templates-notification-channel.value` config or the according environment variable.'
         );
     }
 }

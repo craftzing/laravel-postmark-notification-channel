@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\:package_namespace\Exceptions;
+namespace Craftzing\Laravel\NotificationChannels\PostmarkTemplates\Exceptions;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
