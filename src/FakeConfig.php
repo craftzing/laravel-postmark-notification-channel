@@ -17,7 +17,7 @@ final class FakeConfig implements Config
     private string $defaultSenderName;
     private ?string $postmarkBaseUri;
 
-    private function __construct(Generator $faker)
+    public function __construct(Generator $faker)
     {
         $this->postmarkToken = $faker->md5;
         $this->defaultSenderEmail = 'dev@craftzing.com';
@@ -27,7 +27,7 @@ final class FakeConfig implements Config
 
     public static function swap(Application $app): self
     {
-        return $app->instance(Config::class, new self());
+        return $app->instance(Config::class, new self($app[Generator::class]));
     }
 
     public function postmarkToken(): string
