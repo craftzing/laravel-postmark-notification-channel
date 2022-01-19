@@ -13,7 +13,6 @@ final class IlluminateConfig implements Config
 
     private Repository $config;
     private string $postmarkToken;
-    private string $defaultMailer;
     private string $defaultSenderEmail;
     private string $defaultSenderName;
 
@@ -23,10 +22,6 @@ final class IlluminateConfig implements Config
         $this->postmarkToken = $this->configValue(
             'services.postmark.token',
             fn () => AppMisconfigured::missingPostmarkToken(),
-        );
-        $this->defaultMailer = $this->configValue(
-            'mail.default',
-            fn () => AppMisconfigured::missingDefaultMailer(),
         );
         $this->defaultSenderEmail = $this->configValue(
             'mail.from.address',
@@ -60,11 +55,6 @@ final class IlluminateConfig implements Config
     public function postmarkBaseUri(): ?string
     {
         return $this->config->get('services.postmark.base_uri');
-    }
-
-    public function usesPostmarkAsDefaultMailer(): bool
-    {
-        return $this->defaultMailer === self::POSTMARK_DEFAULT_MAILER;
     }
 
     public function defaultSenderEmail(): string

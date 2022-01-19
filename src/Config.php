@@ -12,8 +12,6 @@ interface Config
 
     public function postmarkBaseUri(): ?string;
 
-    public function usesPostmarkAsDefaultMailer(): bool;
-
     public function defaultSenderEmail(): string;
 
     public function defaultSenderName(): string;

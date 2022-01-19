@@ -45,11 +45,6 @@ final class FakeConfig implements Config
         return $this->postmarkBaseUri;
     }
 
-    public function usesPostmarkAsDefaultMailer(): bool
-    {
-        return true;
-    }
-
     public function defaultSenderEmail(): string
     {
         return $this->defaultSenderEmail;
