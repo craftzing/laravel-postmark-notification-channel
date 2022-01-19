@@ -3,6 +3,7 @@ parameters:
 	paths:
 		- src
 	excludes_analyse:
+	    - ./**/Testing/*
 	    - ./**/*Test.php
 	    - ./**/*TestCase.php
 	    - ./**/Fake*.php
