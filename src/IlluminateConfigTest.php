@@ -22,6 +22,7 @@ final class IlluminateConfigTest extends IntegrationTestCase
     {
         return $overwrites + [
             'services.postmark.token' => $this->faker()->md5,
+            'mail.default' => 'postmark',
             'mail.from.address' => $this->faker()->email,
             'mail.from.name' => $this->faker()->name,
         ];
@@ -32,6 +33,21 @@ final class IlluminateConfigTest extends IntegrationTestCase
         yield 'Postmark token is undefined' => [
             $this->requiredConfig(['services.postmark.token' => null]),
             AppMisconfigured::missingPostmarkToken(),
+        ];
+
+        yield 'Postmark token is empty' => [
+            $this->requiredConfig(['services.postmark.token' => '']),
+            AppMisconfigured::missingPostmarkToken(),
+        ];
+
+        yield 'Default mailer is undefined' => [
+            $this->requiredConfig(['mail.default' => null]),
+            AppMisconfigured::missingDefaultMailer(),
+        ];
+
+        yield 'Default mailer is empty' => [
+            $this->requiredConfig(['mail.default' => '']),
+            AppMisconfigured::missingDefaultMailer(),
         ];
 
         yield 'Default email sender email is undefined' => [
@@ -78,6 +94,7 @@ final class IlluminateConfigTest extends IntegrationTestCase
         $instance = $this->app[IlluminateConfig::class];
 
         $this->assertSame($config['services.postmark.token'], $instance->postmarkToken());
+        $this->assertTrue($instance->usesPostmarkAsDefaultMailer());
         $this->assertSame($config['mail.from.address'], $instance->defaultSenderEmail());
         $this->assertSame($config['mail.from.name'], $instance->defaultSenderName());
     }
@@ -93,12 +110,42 @@ final class IlluminateConfigTest extends IntegrationTestCase
      * @test
      * @dataProvider postmarkBaseUri
      */
-    public function itOptionallyReturnAPostmarkBaseUri(?string $postmarkBaseUri): void
+    public function itOptionallyReturnsAPostmarkBaseUri(?string $postmarkBaseUri): void
     {
         config($this->requiredConfig(['services.postmark.base_uri' => $postmarkBaseUri]));
 
         $instance = $this->app[IlluminateConfig::class];
 
         $this->assertSame($postmarkBaseUri, $instance->postmarkBaseUri());
+    }
+
+    public function usesPostmarkAsDefaultMailer(): Generator
+    {
+        yield 'Default mailer is postmark' => [
+            $this->requiredConfig(['mail.default' => 'postmark']),
+            true,
+        ];
+
+        yield 'Default mailer is not postmark' => [
+            $this->requiredConfig(['mail.default' => $this->faker()->randomElement([
+                'mailgun',
+                'smtp',
+                'sendmail',
+            ])]),
+            false,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider usesPostmarkAsDefaultMailer
+     */
+    public function itCanCheckIfPostmarkIsUsedAsDefaultMailer(array $config, bool $shouldBeUsingPostmark): void
+    {
+        config($config);
+
+        $instance = $this->app[IlluminateConfig::class];
+
+        $this->assertSame($shouldBeUsingPostmark, $instance->usesPostmarkAsDefaultMailer());
     }
 }

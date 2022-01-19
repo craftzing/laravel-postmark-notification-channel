@@ -35,6 +35,16 @@ final class FakeConfig implements Config
         return $this->postmarkToken;
     }
 
+    public function postmarkBaseUri(): ?string
+    {
+        return $this->postmarkBaseUri;
+    }
+
+    public function usesPostmarkAsDefaultMailer(): bool
+    {
+        return true;
+    }
+
     public function defaultSenderEmail(): string
     {
         return $this->defaultSenderEmail;
@@ -43,10 +53,5 @@ final class FakeConfig implements Config
     public function defaultSenderName(): string
     {
         return $this->defaultSenderName;
-    }
-
-    public function postmarkBaseUri(): ?string
-    {
-        return $this->postmarkBaseUri;
     }
 }

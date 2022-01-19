@@ -22,6 +22,7 @@ final class ServiceProviderTest extends IntegrationTestCase
     {
         config([
             'services.postmark.token' => $this->faker()->md5,
+            'mail.default' => 'postmark',
             'mail.from.address' => $this->faker()->email,
             'mail.from.name' => $this->faker()->name,
         ]);

@@ -16,6 +16,14 @@ final class AppMisconfigured extends Exception
         );
     }
 
+    public static function missingDefaultMailer(): self
+    {
+        return new self(
+            'Please make sure to provide a Postmark token by either setting the ' .
+            '"mail.default" config or the according environment variable.'
+        );
+    }
+
     public static function missingDefaultSenderEmail(): self
     {
         return new self(
