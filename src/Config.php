@@ -6,6 +6,8 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 interface Config
 {
+    public function channel(): string;
+
     public function postmarkToken(): string;
 
     public function postmarkBaseUri(): ?string;

@@ -47,6 +47,11 @@ final class IlluminateConfig implements Config
         throw $missingConfigException();
     }
 
+    public function channel(): string
+    {
+        return $this->config->get('postmark-notification-channel.channel');
+    }
+
     public function postmarkToken(): string
     {
         return $this->postmarkToken;

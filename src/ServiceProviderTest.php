@@ -18,6 +18,16 @@ final class ServiceProviderTest extends IntegrationTestCase
     /**
      * @test
      */
+    public function itExposesTheDefaultPackageConfig(): void
+    {
+        $config = config('postmark-notification-channel');
+
+        $this->assertSame(TemplatesChannel::class, $config['channel']);
+    }
+
+    /**
+     * @test
+     */
     public function itBindsADefaultImplementationForTheConfigInterface(): void
     {
         config([
@@ -27,8 +37,8 @@ final class ServiceProviderTest extends IntegrationTestCase
             'mail.from.name' => $this->faker()->name,
         ]);
 
-        $instance = $this->app[Config::class];
+        $config = $this->app[Config::class];
 
-        $this->assertInstanceOf(IlluminateConfig::class, $instance);
+        $this->assertInstanceOf(IlluminateConfig::class, $config);
     }
 }

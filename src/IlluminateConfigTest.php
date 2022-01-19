@@ -87,12 +87,13 @@ final class IlluminateConfigTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCanReturnItsConfigurationValues(): void
+    public function itCanReturnTheConfigurationValues(): void
     {
         config($config = $this->requiredConfig());
 
         $instance = $this->app[IlluminateConfig::class];
 
+        $this->assertSame(config('postmark-notification-channel.channel'), $instance->channel());
         $this->assertSame($config['services.postmark.token'], $instance->postmarkToken());
         $this->assertTrue($instance->usesPostmarkAsDefaultMailer());
         $this->assertSame($config['mail.from.address'], $instance->defaultSenderEmail());

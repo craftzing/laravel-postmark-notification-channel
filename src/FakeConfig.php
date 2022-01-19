@@ -30,6 +30,11 @@ final class FakeConfig implements Config
         return $app->instance(Config::class, new self($app[Generator::class]));
     }
 
+    public function channel(): string
+    {
+        return TemplatesChannel::class;
+    }
+
     public function postmarkToken(): string
     {
         return $this->postmarkToken;
