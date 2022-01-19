@@ -28,6 +28,9 @@ final class Recipients
         return implode(',', $this->emailAddresses);
     }
 
+    /**
+     * @return string[]
+     */
     public function list(): array
     {
         return $this->emailAddresses;

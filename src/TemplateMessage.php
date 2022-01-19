@@ -44,6 +44,7 @@ final class TemplateMessage
     public ?Recipients $bcc = null;
 
     /**
+     * @var string[]
      * @readonly
      */
     public ?array $headers = null;
@@ -70,6 +71,7 @@ final class TemplateMessage
     public ?string $tag = null;
 
     /**
+     * @var array<string|mixed>
      * @readonly
      */
     public ?array $metadata = null;
@@ -128,6 +130,9 @@ final class TemplateMessage
         return $instance;
     }
 
+    /**
+     * @param string[] $headers
+     */
     public function headers(array $headers): self
     {
         $instance = $this->copy();
@@ -183,6 +188,9 @@ final class TemplateMessage
         return $instance;
     }
 
+    /**
+     * @param string[] $metadata
+     */
     public function metadata(array $metadata): self
     {
         $instance = $this->copy();

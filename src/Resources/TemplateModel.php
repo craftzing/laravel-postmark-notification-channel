@@ -6,5 +6,8 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Resources;
 
 interface TemplateModel
 {
+    /**
+     * @return array<string|mixed>
+     */
     public function attributes(): array;
 }

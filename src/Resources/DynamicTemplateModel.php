@@ -7,10 +7,13 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Resources;
 final class DynamicTemplateModel implements TemplateModel
 {
     /**
-     * @var array
+     * @var array<string|mixed>
      */
     private array $attributes;
 
+    /**
+     * @param array<string|mixed> $attributes
+     */
     public function __construct(array $attributes)
     {
         $this->attributes = $attributes;
@@ -21,6 +24,9 @@ final class DynamicTemplateModel implements TemplateModel
         return new self([$attribute => $value] + $this->attributes);
     }
 
+    /**
+     * @return array<string|mixed>
+     */
     public function attributes(): array
     {
         return $this->attributes;
