@@ -101,16 +101,4 @@ final class IlluminateConfigTest extends IntegrationTestCase
 
         $this->assertSame($postmarkBaseUri, $instance->postmarkBaseUri());
     }
-
-    /**
-     * @test
-     */
-    public function itIsBoundAsDefaultImplementationForTheConfigInterface(): void
-    {
-        config($this->requiredConfig());
-
-        $instance = $this->app[Config::class];
-
-        $this->assertInstanceOf(IlluminateConfig::class, $instance);
-    }
 }
