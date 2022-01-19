@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
+use Generator;
+use Illuminate\Notifications\ChannelManager;
+use Illuminate\Notifications\Channels\MailChannel;
 
 use function config;
 
 final class ServiceProviderTest extends IntegrationTestCase
 {
-    use WithFaker;
-
     protected bool $shouldFakeConfig = false;
 
     /**
@@ -30,15 +30,51 @@ final class ServiceProviderTest extends IntegrationTestCase
      */
     public function itBindsADefaultImplementationForTheConfigInterface(): void
     {
-        config([
-            'services.postmark.token' => $this->faker()->md5,
-            'mail.default' => 'postmark',
-            'mail.from.address' => $this->faker()->email,
-            'mail.from.name' => $this->faker()->name,
-        ]);
-
         $config = $this->app[Config::class];
 
         $this->assertInstanceOf(IlluminateConfig::class, $config);
+    }
+
+    /**
+     * @test
+     */
+    public function itExtendsTheNotificationChannelsWithTheTemplatesChannel(): void
+    {
+        $channel = $this->app[ChannelManager::class]->channel(TemplatesChannel::class);
+
+        $this->assertInstanceOf(TemplatesChannel::class, $channel);
+    }
+
+    public function postmarkChannelDefinedInConfig(): Generator
+    {
+        yield 'Default configuration' => [
+            [],
+            TemplatesChannel::class,
+        ];
+
+        yield 'Overwritten configuration' => [
+            ['postmark-notification-channel.channel' => 'mail'],
+            MailChannel::class,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider postmarkChannelDefinedInConfig
+     */
+    public function itExtendsTheNotificationChannelsWithTheDefaultPostmarkChannelDefinedInTheConfig(
+        array $config,
+        string $expectedImplementation
+    ): void {
+        config($config);
+
+        $channel = $this->app[ChannelManager::class]->channel('postmark');
+
+        // Ensure only the "postmark" channel extension was overwritten from the config...
+        $this->assertInstanceOf(
+            TemplatesChannel::class,
+            $this->app[ChannelManager::class]->channel(TemplatesChannel::class),
+        );
+        $this->assertInstanceOf($expectedImplementation, $channel);
     }
 }
