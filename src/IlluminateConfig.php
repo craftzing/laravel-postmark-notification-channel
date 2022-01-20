@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Illuminate\Contracts\Config\Repository;
 
 final class IlluminateConfig implements Config
@@ -57,13 +58,8 @@ final class IlluminateConfig implements Config
         return $this->config->get('services.postmark.base_uri');
     }
 
-    public function defaultSenderEmail(): string
+    public function defaultSender(): Sender
     {
-        return $this->defaultSenderEmail;
-    }
-
-    public function defaultSenderName(): string
-    {
-        return $this->defaultSenderName;
+        return Sender::fromEmail($this->defaultSenderEmail)->as($this->defaultSenderName);
     }
 }

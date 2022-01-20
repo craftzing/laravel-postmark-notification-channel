@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Faker\Generator;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -45,13 +46,8 @@ final class FakeConfig implements Config
         return $this->postmarkBaseUri;
     }
 
-    public function defaultSenderEmail(): string
+    public function defaultSender(): Sender
     {
-        return $this->defaultSenderEmail;
-    }
-
-    public function defaultSenderName(): string
-    {
-        return $this->defaultSenderName;
+        return Sender::fromEmail($this->defaultSenderEmail)->as($this->defaultSenderName);
     }
 }

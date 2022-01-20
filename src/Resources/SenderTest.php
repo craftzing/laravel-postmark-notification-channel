@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Resources;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\FakeConfig;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use PHPUnit\Framework\TestCase;
 
@@ -60,18 +59,5 @@ final class SenderTest extends TestCase
 
         // Note that we should ensure the original resource did not change as it should be immutable...
         $this->assertSame($email, $immutableResource->toString());
-    }
-
-    /**
-     * @test
-     */
-    public function itCanBeInitialisedFromAConfigInstance(): void
-    {
-        $config = new FakeConfig($this->faker);
-
-        $resource = Sender::fromConfig($config);
-
-        $this->assertInstanceOf(Sender::class, $resource);
-        $this->assertSame("{$config->defaultSenderName()} <{$config->defaultSenderEmail()}>", $resource->toString());
     }
 }

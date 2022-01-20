@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
@@ -79,8 +80,10 @@ final class IlluminateConfigTest extends IntegrationTestCase
 
         $this->assertSame(config('postmark-notification-channel.channel'), $instance->channel());
         $this->assertSame(config('services.postmark.token'), $instance->postmarkToken());
-        $this->assertSame(config('mail.from.address'), $instance->defaultSenderEmail());
-        $this->assertSame(config('mail.from.name'), $instance->defaultSenderName());
+        $this->assertEquals(
+            Sender::fromEmail(config('mail.from.address'))->as(config('mail.from.name')),
+            $instance->defaultSender(),
+        );
     }
 
     public function postmarkBaseUri(): Generator

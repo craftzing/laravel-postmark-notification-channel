@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
+
 interface Config
 {
     public function channel(): string;
@@ -12,7 +14,5 @@ interface Config
 
     public function postmarkBaseUri(): ?string;
 
-    public function defaultSenderEmail(): string;
-
-    public function defaultSenderName(): string;
+    public function defaultSender(): Sender;
 }

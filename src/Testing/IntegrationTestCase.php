@@ -8,6 +8,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\FakeExceptionHand
 use Craftzing\Laravel\NotificationChannels\Postmark\FakeConfig;
 use Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -29,6 +30,7 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         Queue::fake();
         Storage::fake();
         FakeExceptionHandler::swap($this->app);
+        Postmark::fake();
 
         if ($this->shouldFakeEvents) {
             Event::fake();

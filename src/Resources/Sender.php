@@ -21,11 +21,6 @@ final class Sender
         return new self($email);
     }
 
-    public static function fromConfig(Config $config): self
-    {
-        return self::fromEmail($config->defaultSenderEmail())->as($config->defaultSenderName());
-    }
-
     public function __toString(): string
     {
         return $this->toString();
