@@ -13,7 +13,7 @@ final class TemplateAliasTest extends TestCase
      */
     public function itImplementsTheTemplateIdentifierInterface(): void
     {
-        $resource = new TemplateAlias('some-alias');
+        $resource = TemplateAlias::fromAlias('some-alias');
 
         $this->assertInstanceOf(TemplateIdentifier::class, $resource);
     }
@@ -23,7 +23,7 @@ final class TemplateAliasTest extends TestCase
      */
     public function itCanReturnItsValue(): void
     {
-        $resource = new TemplateAlias($value = 'some-alias');
+        $resource = TemplateAlias::fromAlias($value = 'some-alias');
 
         $this->assertSame($value, $resource->get());
     }
@@ -33,7 +33,7 @@ final class TemplateAliasTest extends TestCase
      */
     public function itCanReturnItsValueAsAString(): void
     {
-        $resource = new TemplateAlias($value = 'some-alias');
+        $resource = TemplateAlias::fromAlias($value = 'some-alias');
 
         $this->assertSame($value, $resource->toString());
     }
@@ -43,7 +43,7 @@ final class TemplateAliasTest extends TestCase
      */
     public function itCanBeCastedToAString(): void
     {
-        $resource = new TemplateAlias($value = 'some-alias');
+        $resource = TemplateAlias::fromAlias($value = 'some-alias');
 
         $this->assertSame($value, (string) $resource);
     }

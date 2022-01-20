@@ -14,9 +14,17 @@ final class DynamicTemplateModel implements TemplateModel
     /**
      * @param array<string|mixed> $attributes
      */
-    public function __construct(array $attributes)
+    private function __construct(array $attributes)
     {
         $this->attributes = $attributes;
+    }
+
+    /**
+     * @param array<string|mixed> $attributes
+     */
+    public static function fromAttributes(array $attributes): self
+    {
+        return new self($attributes);
     }
 
     public function set(string $attribute, string $value): self

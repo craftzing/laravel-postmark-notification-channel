@@ -34,7 +34,7 @@ final class RecipientsTest extends TestCase
      */
     public function itCanReturnItsValue(array $emailAddresses): void
     {
-        $resource = new Recipients(...$emailAddresses);
+        $resource = Recipients::fromEmails(...$emailAddresses);
 
         $this->assertSame($emailAddresses, $resource->list());
     }
@@ -45,7 +45,7 @@ final class RecipientsTest extends TestCase
      */
     public function itCanBeReturnedAsAString(array $emailAddresses, string $expectedValue): void
     {
-        $resource = new Recipients(...$emailAddresses);
+        $resource = Recipients::fromEmails(...$emailAddresses);
 
         $this->assertSame($expectedValue, $resource->toString());
     }
@@ -56,7 +56,7 @@ final class RecipientsTest extends TestCase
      */
     public function itCanBeCastedToAString(array $emailAddresses, string $expectedValue): void
     {
-        $resource = new Recipients(...$emailAddresses);
+        $resource = Recipients::fromEmails(...$emailAddresses);
 
         $this->assertSame($expectedValue, (string) $resource);
     }

@@ -13,9 +13,14 @@ final class Recipients
      */
     private array $emailAddresses;
 
-    public function __construct(string ...$emailAddresses)
+    private function __construct(string ...$emailAddresses)
     {
         $this->emailAddresses = $emailAddresses;
+    }
+
+    public static function fromEmails(string ...$emailAddresses): self
+    {
+        return new self(...$emailAddresses);
     }
 
     public function __toString(): string

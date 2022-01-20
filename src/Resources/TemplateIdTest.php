@@ -15,7 +15,7 @@ final class TemplateIdTest extends TestCase
      */
     public function itImplementsTheTemplateIdentifierInterface(): void
     {
-        $resource = new TemplateId(random_int(1, 10000));
+        $resource = TemplateId::fromId(random_int(1, 10000));
 
         $this->assertInstanceOf(TemplateIdentifier::class, $resource);
     }
@@ -25,7 +25,7 @@ final class TemplateIdTest extends TestCase
      */
     public function itCanReturnItsValue(): void
     {
-        $resource = new TemplateId($value = random_int(1, 10000));
+        $resource = TemplateId::fromId($value = random_int(1, 10000));
 
         $this->assertSame($value, $resource->get());
     }
@@ -35,7 +35,7 @@ final class TemplateIdTest extends TestCase
      */
     public function itCanReturnItsValueAsAString(): void
     {
-        $resource = new TemplateId($value = random_int(1, 10000));
+        $resource = TemplateId::fromId($value = random_int(1, 10000));
 
         $this->assertSame((string) $value, $resource->toString());
     }
@@ -45,7 +45,7 @@ final class TemplateIdTest extends TestCase
      */
     public function itCanBeCastedToAString(): void
     {
-        $resource = new TemplateId($value = random_int(1, 10000));
+        $resource = TemplateId::fromId($value = random_int(1, 10000));
 
         $this->assertSame((string) $value, (string) $resource);
     }

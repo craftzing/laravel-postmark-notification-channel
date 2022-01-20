@@ -81,7 +81,7 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalRecipients(): void
     {
-        $recipients = new Recipients($this->faker->email);
+        $recipients = Recipients::fromEmails($this->faker->email);
 
         $message = $this->message->to($recipients);
 
@@ -94,7 +94,7 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalBcc(): void
     {
-        $recipients = new Recipients($this->faker->email);
+        $recipients = Recipients::fromEmails($this->faker->email);
 
         $message = $this->message->bcc($recipients);
 

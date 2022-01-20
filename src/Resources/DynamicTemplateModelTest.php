@@ -13,7 +13,7 @@ final class DynamicTemplateModelTest extends TestCase
      */
     public function itImplementsTheTemplateModelInterface(): void
     {
-        $resource = new DynamicTemplateModel([]);
+        $resource = DynamicTemplateModel::fromAttributes([]);
 
         $this->assertInstanceOf(TemplateModel::class, $resource);
     }
@@ -24,7 +24,7 @@ final class DynamicTemplateModelTest extends TestCase
     public function itCanReturnItsAttributes(): void
     {
         $attributes = ['key' => 'some-value'];
-        $resource = new DynamicTemplateModel($attributes);
+        $resource = DynamicTemplateModel::fromAttributes($attributes);
 
         $this->assertSame($attributes, $resource->attributes());
     }
@@ -34,7 +34,7 @@ final class DynamicTemplateModelTest extends TestCase
      */
     public function itCanSetAttributesAfterInitialisation(): void
     {
-        $immutableResource = new DynamicTemplateModel([]);
+        $immutableResource = DynamicTemplateModel::fromAttributes([]);
 
         $resource = $immutableResource->set('foo', 'bar');
 
@@ -48,7 +48,7 @@ final class DynamicTemplateModelTest extends TestCase
     public function itCanOverwriteAttributesAfterInitialisation(): void
     {
         $attributes = ['foo' => 'bar'];
-        $immutableResource = new DynamicTemplateModel($attributes);
+        $immutableResource = DynamicTemplateModel::fromAttributes($attributes);
 
         $resource = $immutableResource->set('foo', 'baz');
 

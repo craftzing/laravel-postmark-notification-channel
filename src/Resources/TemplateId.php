@@ -8,9 +8,14 @@ final class TemplateId implements TemplateIdentifier
 {
     private int $value;
 
-    public function __construct(int $value)
+    private function __construct(int $value)
     {
         $this->value = $value;
+    }
+
+    public static function fromId(int $value): self
+    {
+        return new self($value);
     }
 
     public function __toString(): string

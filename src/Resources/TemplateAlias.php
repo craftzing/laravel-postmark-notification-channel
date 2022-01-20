@@ -8,9 +8,14 @@ final class TemplateAlias implements TemplateIdentifier
 {
     private string $value;
 
-    public function __construct(string $value)
+    private function __construct(string $value)
     {
         $this->value = $value;
+    }
+
+    public static function fromAlias(string $value): self
+    {
+        return new self($value);
     }
 
     public function __toString(): string
