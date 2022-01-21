@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
+use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
+use Symfony\Component\HttpFoundation\Response;
 
 use function compact;
+use function tap;
 
-final class SpyPostmarkClient extends PostmarkClient
+final class FakePostmarkClient extends PostmarkClient
 {
     /**
      * @var mixed[]
      */
     private array $emailSentWithTemplate = [];
+
+    private ?PostmarkException $exception = null;
 
     public function __construct(string $serverToken = 'some-fake-token')
     {
@@ -61,6 +67,10 @@ final class SpyPostmarkClient extends PostmarkClient
             'messageStream',
         );
 
+        if ($this->exception) {
+            throw $this->exception;
+        }
+
         return new DynamicResponseModel([]);
     }
 
@@ -80,5 +90,19 @@ final class SpyPostmarkClient extends PostmarkClient
         Assert::assertSame($this->emailSentWithTemplate['trackLinks'], ((string) $message->trackLinks) ?: null);
         Assert::assertSame($this->emailSentWithTemplate['metadata'], $message->metadata);
         Assert::assertSame($this->emailSentWithTemplate['messageStream'], $message->messageStream);
+    }
+
+    public function respondWithInactiveRecipientError(): PostmarkException
+    {
+        return $this->exception = tap(new PostmarkException(), function (PostmarkException $e): void {
+            $e->httpStatusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+            $e->message = 'Recipient is inactive';
+            $e->postmarkApiErrorCode = CouldNotSendNotification::POSTMARK_API_ERROR_CODE_RECIPIENT_IS_INACTIVE;
+        });
+    }
+
+    public function respondWithError(): PostmarkException
+    {
+        return $this->exception = new PostmarkException();
     }
 }
