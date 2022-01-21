@@ -14,6 +14,7 @@ use function config;
 final class ServiceProviderTest extends IntegrationTestCase
 {
     protected bool $shouldFakeConfig = false;
+    protected bool $shouldFakePostmark = false;
 
     /**
      * @test
@@ -33,6 +34,16 @@ final class ServiceProviderTest extends IntegrationTestCase
         $config = $this->app[Config::class];
 
         $this->assertInstanceOf(IlluminateConfig::class, $config);
+    }
+
+    /**
+     * @test
+     */
+    public function itBindsTheTemplateChannel(): void
+    {
+        $channel = $this->app[TemplatesChannel::class];
+
+        $this->assertInstanceOf(TemplatesChannel::class, $channel);
     }
 
     /**

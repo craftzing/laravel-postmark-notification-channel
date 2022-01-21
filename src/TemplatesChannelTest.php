@@ -18,9 +18,11 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Generator;
 use Illuminate\Notifications\Notification;
 use Postmark\Models\PostmarkAttachment;
+use Postmark\PostmarkClient;
 
 final class TemplatesChannelTest extends IntegrationTestCase
 {
+    private Config $config;
     private TemplatesChannel $channel;
 
     /**
@@ -29,7 +31,11 @@ final class TemplatesChannelTest extends IntegrationTestCase
     public function setupChannel(): void
     {
         $this->afterApplicationCreated(function (): void {
-            $this->channel = $this->app[TemplatesChannel::class];
+            $this->config = $this->app[Config::class];
+            $this->channel = new TemplatesChannel(
+                Postmark::getFacadeRoot(),
+                $this->config->defaultSender(),
+            );
         });
     }
 
@@ -38,7 +44,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      */
     public function unsetChannel(): void
     {
-        unset($this->channel);
+        unset($this->config, $this->channel);
     }
 
     /**
@@ -154,7 +160,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
         $expectedMessage = $resolveExpectedMessage(
             $notification->toPostmarkTemplate(),
             $notifiable,
-            $this->app[Config::class]->defaultSender(),
+            $this->config->defaultSender(),
         );
 
         $this->channel->send($notifiable, $notification);

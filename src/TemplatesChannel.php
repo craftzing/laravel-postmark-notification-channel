@@ -19,10 +19,21 @@ final class TemplatesChannel
     private PostmarkClient $postmark;
     private Sender $defaultSender;
 
-    public function __construct(PostmarkClient $postmark, Config $config)
+    public function __construct(PostmarkClient $postmark, Sender $defaultSender)
     {
         $this->postmark = $postmark;
-        $this->defaultSender = $config->defaultSender();
+        $this->defaultSender = $defaultSender;
+    }
+
+    public static function fromConfig(Config $config): self
+    {
+        $postmark = new PostmarkClient($config->postmarkToken());
+
+        if ($baseUri = $config->postmarkBaseUri()) {
+            $postmark::$BASE_URL = $baseUri;
+        }
+
+        return new self($postmark, $config->defaultSender());
     }
 
     /**

@@ -23,6 +23,7 @@ abstract class IntegrationTestCase extends OrchestraTestCase
 
     protected bool $shouldFakeEvents = true;
     protected bool $shouldFakeConfig = true;
+    protected bool $shouldFakePostmark = true;
 
     protected function setUpTraits(): array
     {
@@ -30,7 +31,6 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         Queue::fake();
         Storage::fake();
         FakeExceptionHandler::swap($this->app);
-        Postmark::fake();
 
         if ($this->shouldFakeEvents) {
             Event::fake();
@@ -38,6 +38,10 @@ abstract class IntegrationTestCase extends OrchestraTestCase
 
         if ($this->shouldFakeConfig) {
             FakeConfig::swap($this->app);
+        }
+
+        if ($this->shouldFakePostmark) {
+            Postmark::fake();
         }
 
         return parent::setUpTraits();
