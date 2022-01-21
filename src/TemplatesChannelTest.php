@@ -18,7 +18,6 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Generator;
 use Illuminate\Notifications\Notification;
 use Postmark\Models\PostmarkAttachment;
-use Postmark\PostmarkClient;
 
 final class TemplatesChannelTest extends IntegrationTestCase
 {

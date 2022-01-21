@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\FakeExceptionHandler;
-use Craftzing\Laravel\NotificationChannels\Postmark\FakeConfig;
 use Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
+use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -16,49 +17,44 @@ use Illuminate\Support\Facades\Storage;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 use function config;
+use function env;
 
 abstract class IntegrationTestCase extends OrchestraTestCase
 {
     use WithFaker;
-
-    protected bool $shouldFakeEvents = true;
-    protected bool $shouldFakeConfig = true;
-    protected bool $shouldFakePostmark = true;
 
     protected function setUpTraits(): array
     {
         Bus::fake();
         Queue::fake();
         Storage::fake();
+        Event::fake();
         FakeExceptionHandler::swap($this->app);
-
-        if ($this->shouldFakeEvents) {
-            Event::fake();
-        }
-
-        if ($this->shouldFakeConfig) {
-            FakeConfig::swap($this->app);
-        }
-
-        if ($this->shouldFakePostmark) {
-            Postmark::fake();
-        }
+        Config::fake();
+        Postmark::fake();
 
         return parent::setUpTraits();
     }
 
-    /**
-     * @before
-     */
-    public function setupConfig(): void
+    protected function getEnvironmentSetUp($app): void
     {
-        $this->afterApplicationCreated(function (): void {
-            config([
-                'services.postmark.token' => $this->faker()->md5,
-                'mail.from.address' => $this->faker()->email,
-                'mail.from.name' => $this->faker()->name,
-            ]);
-        });
+        $app->useEnvironmentPath(__DIR__ . '/../../');
+        $app->bootstrapWith([LoadEnvironmentVariables::class]);
+        $this->setupPostmarkConfig();
+        $this->setupMailConfig();
+    }
+
+    public function setupPostmarkConfig(): void
+    {
+        config(['services.postmark.token' => env('POSTMARK_TOKEN')]);
+    }
+
+    private function setupMailConfig(): void
+    {
+        config([
+            'mail.from.address' => $this->faker()->email,
+            'mail.from.name' => $this->faker()->name,
+        ]);
     }
 
     /**

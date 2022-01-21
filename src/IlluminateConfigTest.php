@@ -14,8 +14,6 @@ use function config;
 
 final class IlluminateConfigTest extends IntegrationTestCase
 {
-    protected bool $shouldFakeConfig = false;
-
     private function requiredConfig(array $overwrites = []): array
     {
         return $overwrites + [
