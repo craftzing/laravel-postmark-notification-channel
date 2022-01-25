@@ -40,18 +40,9 @@ abstract class IntegrationTestCase extends OrchestraTestCase
     {
         $app->useEnvironmentPath(__DIR__ . '/../../');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
-        $this->setupPostmarkConfig();
-        $this->setupMailConfig();
-    }
 
-    public function setupPostmarkConfig(): void
-    {
-        config(['services.postmark.token' => env('POSTMARK_TOKEN')]);
-    }
-
-    private function setupMailConfig(): void
-    {
         config([
+            'services.postmark.token' => env('POSTMARK_TOKEN'),
             'mail.from.address' => $this->faker()->email,
             'mail.from.name' => $this->faker()->name,
         ]);

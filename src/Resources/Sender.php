@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Resources;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Config;
-
 final class Sender
 {
     private string $email;
