@@ -7,7 +7,6 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CannotConvertNotificationToPostmarkTemplate;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Illuminate\Notifications\Notification;
 use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
@@ -16,24 +15,21 @@ use function method_exists;
 
 final class TemplatesChannel
 {
+    private Config $config;
     private PostmarkClient $postmark;
-    private Sender $defaultSender;
 
-    public function __construct(PostmarkClient $postmark, Sender $defaultSender)
+    public function __construct(Config $config, ?PostmarkClient $postmark = null)
     {
-        $this->postmark = $postmark;
-        $this->defaultSender = $defaultSender;
+        $this->config = $config;
+        $this->postmark = $postmark ?: $this->createPostmarkClient($config);
     }
 
-    public static function fromConfig(Config $config): self
+    private function createPostmarkClient(Config $config): PostmarkClient
     {
         $postmark = new PostmarkClient($config->postmarkToken());
+        $postmark::$BASE_URL = $config->postmarkBaseUri();
 
-        if ($baseUri = $config->postmarkBaseUri()) {
-            $postmark::$BASE_URL = $baseUri;
-        }
-
-        return new self($postmark, $config->defaultSender());
+        return $postmark;
     }
 
     /**
@@ -43,6 +39,11 @@ final class TemplatesChannel
     {
         $message = $this->convertNotificationToMessage($notification, $notifiable);
 
+        $this->sendViaTemplatesApi($message);
+    }
+
+    private function sendViaTemplatesApi(TemplateMessage $message): void
+    {
         try {
             $this->postmark->sendEmailWithTemplate(
                 $message->sender->toString(),
@@ -54,15 +55,15 @@ final class TemplatesChannel
                 $message->trackOpens,
                 null,
                 null,
-                ((string) $message->bcc) ?: null,
+                ((string)$message->bcc) ?: null,
                 $message->headers,
                 $message->attachments,
-                ((string) $message->trackLinks) ?: null,
+                ((string)$message->trackLinks) ?: null,
                 $message->metadata,
                 $message->messageStream,
             );
         } catch (PostmarkException $e) {
-            if ($e->postmarkApiErrorCode === CouldNotSendNotification::POSTMARK_API_ERROR_CODE_RECIPIENT_IS_INACTIVE) {
+            if ($e->postmarkApiErrorCode === PostmarkErrorCodes::RECIPIENT_IS_INACTIVE) {
                 throw CouldNotSendNotification::recipientIsInactive($e);
             }
 
@@ -79,7 +80,7 @@ final class TemplatesChannel
         $message = $notification->toPostmarkTemplate($notifiable);
 
         if (! $message->sender) {
-            $message = $message->from($this->defaultSender);
+            $message = $message->from($this->config->defaultSender());
         }
 
         if (! $message->recipients) {

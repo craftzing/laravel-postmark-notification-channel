@@ -25,22 +25,21 @@ use function sprintf;
  */
 final class Postmark extends Facade
 {
-    private static ?PostmarkClient $implementation = null;
-
     public static function fake(): void
     {
-        self::$implementation = new PostmarkClient(self::$app[ConfigInterface::class]->postmarkToken());
-
+        // By default, the service provider should not bind an instance of the PostmarkClient to the IoC
+        // container, as it is an implementation detail. However, classes using PostmarkClient should
+        // accept an optional client instance as a constructor argument. This should enable us to
+        // provide a fake implementation via IoC binding when running tests, preventing the
+        // implementation from initialising a real PostmarkClient instance under the hood.
         self::$app->instance(self::getFacadeAccessor(), new FakePostmarkClient());
     }
 
     public static function dontFake(): void
     {
-        if (! self::$implementation) {
-            throw new LogicException(sprintf("`%s` has not been faked.", self::getFacadeAccessor()));
-        }
-
-        self::$app->instance(self::getFacadeAccessor(), self::$implementation);
+        // When "unfaking" the PostmarkClient, we should drop the container binding so classes
+        // using PostmarkClient will once again initialise a real instance themselves.
+        unset(self::$app[self::getFacadeAccessor()]);
     }
 
     protected static function getFacadeAccessor(): string

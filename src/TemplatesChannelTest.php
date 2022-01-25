@@ -31,10 +31,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
     {
         $this->afterApplicationCreated(function (): void {
             $this->config = $this->app[Config::class];
-            $this->channel = new TemplatesChannel(
-                Postmark::getFacadeRoot(),
-                $this->config->defaultSender(),
-            );
+            $this->channel = $this->app[TemplatesChannel::class];
         });
     }
 
@@ -151,7 +148,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      * @dataProvider templateMessages
      * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $resolveExpectedMessage
      */
-    public function itCanSendEmailTemplateMessages(
+    public function itCanSendEmailTemplateMessagesViaThePostmarkAPI(
         TemplateNotification $notification,
         callable $resolveExpectedMessage
     ): void {

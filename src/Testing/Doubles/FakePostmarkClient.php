@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
+use Craftzing\Laravel\NotificationChannels\Postmark\PostmarkErrorCodes;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
@@ -97,7 +98,7 @@ final class FakePostmarkClient extends PostmarkClient
         return $this->exception = tap(new PostmarkException(), function (PostmarkException $e): void {
             $e->httpStatusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
             $e->message = 'Recipient is inactive';
-            $e->postmarkApiErrorCode = CouldNotSendNotification::POSTMARK_API_ERROR_CODE_RECIPIENT_IS_INACTIVE;
+            $e->postmarkApiErrorCode = PostmarkErrorCodes::RECIPIENT_IS_INACTIVE;
         });
     }
 
