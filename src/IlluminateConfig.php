@@ -43,11 +43,6 @@ final class IlluminateConfig implements Config
         throw $missingConfigException();
     }
 
-    public function channel(): string
-    {
-        return $this->config->get('postmark-notification-channel.channel');
-    }
-
     public function postmarkToken(): string
     {
         return $this->postmarkToken;
@@ -61,5 +56,10 @@ final class IlluminateConfig implements Config
     public function defaultSender(): Sender
     {
         return Sender::fromEmail($this->defaultSenderEmail)->as($this->defaultSenderName);
+    }
+
+    public function shouldSendViaMailChannel(): bool
+    {
+        return $this->config->get('postmark-notification-channel.send_via_mail_channel');
     }
 }

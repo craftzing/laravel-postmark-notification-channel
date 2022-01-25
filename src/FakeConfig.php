@@ -25,11 +25,6 @@ final class FakeConfig implements Config
         $this->postmarkBaseUri = null;
     }
 
-    public function channel(): string
-    {
-        return TemplatesChannel::class;
-    }
-
     public function postmarkToken(): string
     {
         return $this->postmarkToken;
@@ -43,5 +38,10 @@ final class FakeConfig implements Config
     public function defaultSender(): Sender
     {
         return Sender::fromEmail($this->defaultSenderEmail)->as($this->defaultSenderName);
+    }
+
+    public function shouldSendViaMailChannel(): bool
+    {
+        return false;
     }
 }

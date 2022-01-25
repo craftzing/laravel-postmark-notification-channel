@@ -16,7 +16,6 @@ final class ServiceProvider extends IlluminateProvider
         $this->mergeConfigFrom(self::CONFIG_PATH, 'postmark-notification-channel');
 
         $this->app->bind(Config::class, IlluminateConfig::class);
-        $this->app->bind(TemplatesChannel::class, fn ($app) => TemplatesChannel::fromConfig($app[Config::class]));
     }
 
     public function boot(ChannelManager $channels): void
@@ -28,8 +27,5 @@ final class ServiceProvider extends IlluminateProvider
         }
 
         $channels->extend(TemplatesChannel::class, fn (): TemplatesChannel => $this->app[TemplatesChannel::class]);
-        $channels->extend('postmark', fn () => $channels->channel(
-            $this->app[Config::class]->channel(),
-        ));
     }
 }

@@ -76,12 +76,12 @@ final class IlluminateConfigTest extends IntegrationTestCase
     {
         $instance = $this->app[IlluminateConfig::class];
 
-        $this->assertSame(config('postmark-notification-channel.channel'), $instance->channel());
         $this->assertSame(config('services.postmark.token'), $instance->postmarkToken());
         $this->assertEquals(
             Sender::fromEmail(config('mail.from.address'))->as(config('mail.from.name')),
             $instance->defaultSender(),
         );
+        $this->assertFalse($instance->shouldSendViaMailChannel());
     }
 
     public function postmarkBaseUri(): Generator
@@ -102,5 +102,17 @@ final class IlluminateConfigTest extends IntegrationTestCase
         $instance = $this->app[IlluminateConfig::class];
 
         $this->assertSame($postmarkBaseUri, $instance->postmarkBaseUri());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanEnableToSendEmailTemplatesViaTheMailChannel(): void
+    {
+        config(['postmark-notification-channel.send_via_mail_channel' => true]);
+
+        $instance = $this->app[IlluminateConfig::class];
+
+        $this->assertTrue($instance->shouldSendViaMailChannel());
     }
 }
