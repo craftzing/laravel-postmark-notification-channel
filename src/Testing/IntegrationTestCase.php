@@ -12,6 +12,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -29,6 +30,7 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         Queue::fake();
         Storage::fake();
         Event::fake();
+        Mail::fake();
         FakeExceptionHandler::swap($this->app);
         Config::fake();
         Postmark::fake();

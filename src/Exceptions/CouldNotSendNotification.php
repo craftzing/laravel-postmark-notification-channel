@@ -6,11 +6,10 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Exceptions;
 
 use Exception;
 use Postmark\Models\PostmarkException;
+use function json_encode;
 
 final class CouldNotSendNotification extends Exception
 {
-    public const POSTMARK_API_ERROR_CODE_RECIPIENT_IS_INACTIVE = 406;
-
     public static function recipientIsInactive(PostmarkException $postmarkException): self
     {
         return new self(
@@ -18,6 +17,29 @@ final class CouldNotSendNotification extends Exception
             "`$postmarkException->httpStatusCode - $postmarkException->message " .
             "(API error code: $postmarkException->postmarkApiErrorCode)`",
         );
+    }
+
+    public static function invalidTemplateModel(PostmarkException $postmarkException): self
+    {
+        return new self(
+            'The template model is invalid: ' .
+            "`$postmarkException->httpStatusCode - $postmarkException->message " .
+            "(API error code: $postmarkException->postmarkApiErrorCode)`",
+        );
+    }
+
+    public static function templateIdIsInvalidOrNotFound(PostmarkException $postmarkException): self
+    {
+        return new self(
+            'The TemplateId is invalid or not found: ' .
+            "`$postmarkException->httpStatusCode - $postmarkException->message " .
+            "(API error code: $postmarkException->postmarkApiErrorCode)`",
+        );
+    }
+
+    public static function templateContentIsInvalid(): self
+    {
+        return new self('The Template content is invalid.');
     }
 
     public static function requestToPostmarkApiFailed(PostmarkException $postmarkException): self
