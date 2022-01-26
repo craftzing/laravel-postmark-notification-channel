@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Config as ConfigInterface;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakePostmarkClient;
 use Illuminate\Support\Facades\Facade;
-use LogicException;
 use Postmark\PostmarkClient;
-
-use function sprintf;
 
 /**
  * @method static void assertSendEmailWithTemplate(TemplateMessage $message)

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\PostmarkErrorCodes;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use PHPUnit\Framework\Assert;

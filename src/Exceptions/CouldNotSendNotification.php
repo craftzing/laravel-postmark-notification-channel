@@ -6,7 +6,6 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Exceptions;
 
 use Exception;
 use Postmark\Models\PostmarkException;
-use function json_encode;
 
 final class CouldNotSendNotification extends Exception
 {
