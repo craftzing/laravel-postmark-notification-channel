@@ -38,10 +38,7 @@ final class TemplatesChannel
         return $postmark;
     }
 
-    /**
-     * @param mixed $notifiable
-     */
-    public function send($notifiable, Notification $notification): void
+    public function send(object $notifiable, Notification $notification): void
     {
         $message = $this->convertNotificationToMessage($notification, $notifiable);
 
@@ -89,7 +86,7 @@ final class TemplatesChannel
                 $template['Subject'],
                 $template['HtmlBody'],
                 $template['TextBody'],
-                $message->model->attributes(),
+                (object) $message->model->attributes(),
                 $message->inlineCss,
                 $template['TemplateType'],
                 $template['LayoutTemplate'],
@@ -120,7 +117,7 @@ final class TemplatesChannel
             ));
     }
 
-    private function convertNotificationToMessage(Notification $notification, $notifiable): TemplateMessage
+    private function convertNotificationToMessage(Notification $notification, object $notifiable): TemplateMessage
     {
         if (! method_exists($notification, 'toPostmarkTemplate')) {
             throw CannotConvertNotificationToPostmarkTemplate::missingToPostmarkTemplateMethod($notification);
@@ -139,7 +136,7 @@ final class TemplatesChannel
         return $message;
     }
 
-    private function recipientFromNotifiable($notifiable, ?Notification $notification = null): Recipients
+    private function recipientFromNotifiable(object $notifiable, ?Notification $notification = null): Recipients
     {
         $emailAddress = $notifiable->routeNotificationFor('mail', $notification);
 
