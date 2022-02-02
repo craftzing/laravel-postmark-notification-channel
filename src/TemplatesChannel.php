@@ -9,6 +9,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotif
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Notifications\Notification;
+use Postmark\Models\DynamicResponseModel;
 use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
 
@@ -82,15 +83,18 @@ final class TemplatesChannel
     {
         try {
             $template = $this->postmark->getTemplate($message->identifier->get());
-            $response = $this->postmark->validateTemplate(
-                $template['Subject'],
-                $template['HtmlBody'],
-                $template['TextBody'],
-                (object) $message->model->attributes(),
+
+            // When validating a template, Postmark is very loose on which data is provided by the TemplateModel. For
+            // any variable that is missing, it injects a "suggested" template model. And if you provide an empty
+            // array for a variable that requires sub properties, Postmark will just accept the empty array.
+            // Therefore, we should validate the Template once with the actual model and once with a
+            // clearly invalid model in order to compare the "suggested" model with the actual one.
+            $response = $this->validateTemplate($template, $message->model->attributes(), $message->inlineCss);
+            $suggestedTemplateModel = $this->validateTemplate(
+                $template,
+                [],
                 $message->inlineCss,
-                $template['TemplateType'],
-                $template['LayoutTemplate'],
-            );
+            )['SuggestedTemplateModel'] ?? [];
         } catch (PostmarkException $e) {
             if ($e->postmarkApiErrorCode === PostmarkErrorCodes::TEMPLATE_ID_INVALID_OR_NOT_FOUND) {
                 throw CouldNotSendNotification::templateIdIsInvalidOrNotFound($e);
@@ -107,6 +111,12 @@ final class TemplatesChannel
             throw CouldNotSendNotification::templateContentIsInvalid();
         }
 
+        $validatedModel = ValidatedTemplateModel::validate($message->model, $suggestedTemplateModel);
+
+        if ($validatedModel->isIncompleteOrInvalid()) {
+            throw CouldNotSendNotification::templateModelIsIncompleteOrInvalid($validatedModel);
+        }
+
         $this->mailer
             ->to((string) $message->recipients)
             ->bcc((string) $message->bcc)
@@ -115,6 +125,22 @@ final class TemplatesChannel
                 (string) $response['HtmlBody']['RenderedContent'],
                 (string) $response['TextBody']['RenderedContent'],
             ));
+    }
+
+    private function validateTemplate(
+        DynamicResponseModel $template,
+        array $model,
+        bool $inlineCss
+    ): DynamicResponseModel {
+        return $this->postmark->validateTemplate(
+            $template['Subject'],
+            $template['HtmlBody'],
+            $template['TextBody'],
+            (object) $model,
+            $inlineCss,
+            $template['TemplateType'],
+            $template['LayoutTemplate'],
+        );
     }
 
     private function convertNotificationToMessage(Notification $notification, object $notifiable): TemplateMessage

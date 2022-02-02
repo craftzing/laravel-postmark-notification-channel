@@ -53,13 +53,12 @@ final class TemplatesChannelE2ETest extends IntegrationTestCase
             ),
         ];
 
-// TODO: Prevent models with missing attributes from being validated
-//        yield 'Template model has no attributes' => [
-//            new TemplateMessage(
-//                TemplateAlias::fromAlias('ci-template'),
-//                DynamicTemplateModel::fromAttributes([]),
-//            ),
-//        ];
+        yield 'Template model has no attributes' => [
+            new TemplateMessage(
+                TemplateAlias::fromAlias('ci-template'),
+                DynamicTemplateModel::fromAttributes([]),
+            ),
+        ];
     }
 
     /**
@@ -82,14 +81,39 @@ final class TemplatesChannelE2ETest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCanAnEmailTemplateSendViaTheMailChannel(): void
+    public function itCanSendAnEmailTemplateSendViaTheMailChannel(): void
     {
         config(['postmark-notification-channel.send_via_mail_channel' => true]);
         $notifiable = new MailRoutingNotifiable();
         $bcc = Recipients::fromEmails('fake@craftzing.com');
         $message = (new TemplateMessage(
             TemplateAlias::fromAlias('ci-template'),
-            DynamicTemplateModel::fromAttributes(['name' => 'foo']),
+            DynamicTemplateModel::fromAttributes([
+                'project' => 'foo',
+                'templateName' => 'bar',
+                'ci' => [
+                    'repo' => 'laravel-postmark-notification-channel',
+                    'build' => '87483743',
+                ],
+                'templateHtmlItems' => [
+                    [
+                        'name' => $this->faker->word,
+                        'url' => $this->faker->url,
+                    ],
+                ],
+                'layoutHtmlList' => [
+                    ['name' => $this->faker->word],
+                ],
+                'templateTextList' => [
+                    [
+                        'name' => $this->faker->word,
+                        'url' => $this->faker->url,
+                    ],
+                ],
+                'layoutTextList' => [
+                    ['name' => $this->faker->word],
+                ],
+            ]),
         ))->bcc($bcc);
 
         $this->channel->send($notifiable, new TemplateNotification($message));
