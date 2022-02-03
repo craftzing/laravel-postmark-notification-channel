@@ -145,12 +145,12 @@ final class ValidatedTemplateModelTest extends TestCase
             ]),
             [
                 'user' => [
-                    'preferences' =>[
+                    'preferences' => [
                         self::SUGGESTED_MODEL['user']['preferences'][0],
                         self::SUGGESTED_MODEL['user']['preferences'][0],
                     ],
                 ],
-                'list' =>[
+                'list' => [
                     self::SUGGESTED_MODEL['list'][0],
                     self::SUGGESTED_MODEL['list'][0],
                     self::SUGGESTED_MODEL['list'][0],

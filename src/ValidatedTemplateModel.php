@@ -58,7 +58,7 @@ final class ValidatedTemplateModel
 
     /**
      * @param string|int $key
-     * @param string|array $suggestedValue
+     * @param string|array<mixed> $suggestedValue
      */
     private function isMarkedAsMissing($key, DynamicResponseModel $model, $suggestedValue): bool
     {
@@ -73,8 +73,8 @@ final class ValidatedTemplateModel
 
     /**
      * @param string|int $key
-     * @param string|array $providedValue
-     * @param string|array $suggestedValue
+     * @param string|array<mixed> $providedValue
+     * @param string|array<mixed> $suggestedValue
      */
     private function isMarkedAsInvalid($key, $providedValue, $suggestedValue): bool
     {
@@ -108,8 +108,8 @@ final class ValidatedTemplateModel
 
     /**
      * @param string|int $key
-     * @param string|array $suggestedValue
-     * @param string|array $suggestedValue
+     * @param string|array<mixed> $providedValue
+     * @param string|array<mixed> $suggestedValue
      */
     private function validateNestedAttributes($key, $providedValue, $suggestedValue): void
     {

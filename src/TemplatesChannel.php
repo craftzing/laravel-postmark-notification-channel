@@ -127,6 +127,9 @@ final class TemplatesChannel
             ));
     }
 
+    /**
+     * @param array<mixed> $model
+     */
     private function validateTemplate(
         DynamicResponseModel $template,
         array $model,

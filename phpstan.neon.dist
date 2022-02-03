@@ -7,4 +7,7 @@ parameters:
 	    - ./**/*Test.php
 	    - ./**/*TestCase.php
 	    - ./**/Fake*.php
+	ignoreErrors:
+	    - '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\) has parameter \$[a-zA-Z0-9]+ with no value type specified in iterable type Postmark\\Models\\DynamicResponseModel.#'
+	    - '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\) return type has no value type specified in iterable type Postmark\\Models\\DynamicResponseModel.#'
 	checkGenericClassInNonGenericObjectType: false
