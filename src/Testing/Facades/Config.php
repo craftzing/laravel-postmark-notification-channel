@@ -11,6 +11,10 @@ use LogicException;
 
 use function sprintf;
 
+/**
+ * @method static void enableSendingViaMailChannel()
+ * @see FakeConfig::enableSendingViaMailChannel
+ */
 final class Config extends Facade
 {
     private static ?ConfigInterface $implementation = null;

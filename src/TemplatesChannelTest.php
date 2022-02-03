@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
+use Closure;
 use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CannotConvertNotificationToPostmarkTemplate;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
@@ -13,16 +14,18 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\MailRoutingNotifiable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\TemplateNotification;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as ConfigFacade;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\TemplatesApi as TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Generator;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 use Postmark\Models\PostmarkAttachment;
 
 final class TemplatesChannelTest extends IntegrationTestCase
 {
-    private Config $config;
     private TemplatesChannel $channel;
+    private Config $config;
 
     /**
      * @before
@@ -31,8 +34,8 @@ final class TemplatesChannelTest extends IntegrationTestCase
     {
         $this->afterApplicationCreated(function (): void {
             TemplatesApi::fake();
-            $this->config = $this->app[Config::class];
             $this->channel = $this->app[TemplatesChannel::class];
+            $this->config = $this->app[Config::class];
         });
     }
 
@@ -41,14 +44,33 @@ final class TemplatesChannelTest extends IntegrationTestCase
      */
     public function unsetChannel(): void
     {
-        unset($this->config, $this->channel);
+        unset($this->channel, $this->config);
+    }
+
+    public function channelConfigurations(): Generator
+    {
+        yield 'Send via Templates API' => [
+            function (): void {
+                // This is the default configuration...
+            },
+        ];
+
+        yield 'Send via mail channel' => [
+            function (): void {
+                ConfigFacade::enableSendingViaMailChannel();
+            },
+        ];
     }
 
     /**
      * @test
+     * @dataProvider channelConfigurations
+     * @param callable(): void $configureChannel
      */
-    public function itFailsWhenSendingNotificationsThatCannotBeConvertedToAPostmarkTemplate(): void
-    {
+    public function itFailsWhenSendingNotificationsThatCannotBeConvertedToAPostmarkTemplate(
+        callable $configureChannel
+    ): void {
+        $configureChannel();
         $notifiable = new MailRoutingNotifiable();
         $notification = new Notification();
 
@@ -61,12 +83,15 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
     /**
      * @test
+     * @dataProvider channelConfigurations
+     * @param callable(): void $configureChannel
      */
-    public function itFailsWhenTheRequestToPostmarkTemplatesApiFailed(): void
+    public function itFailsWhenARequestToPostmarkTemplatesApiFailed(callable $configureChannel): void
     {
+        $configureChannel();
+        $e = TemplatesApi::failRequestToPostmark();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
-        $e = TemplatesApi::failRequestToPostmark();
 
         $this->expectExceptionObject(CouldNotSendNotification::requestToPostmarkApiFailed($e));
 
@@ -133,14 +158,14 @@ final class TemplatesChannelTest extends IntegrationTestCase
     /**
      * @test
      * @dataProvider templateMessages
-     * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $resolveExpectedMessage
+     * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $expectMessage
      */
-    public function itCanSendEmailTemplateMessagesViaThePostmarkAPI(
+    public function itCanSendEmailTemplateMessagesViaTheTemplatesAPI(
         TemplateNotification $notification,
-        callable $resolveExpectedMessage
+        callable $expectMessage
     ): void {
         $notifiable = new MailRoutingNotifiable();
-        $expectedMessage = $resolveExpectedMessage(
+        $expectedMessage = $expectMessage(
             $notification->toPostmarkTemplate(),
             $notifiable,
             $this->config->defaultSender(),
@@ -149,5 +174,85 @@ final class TemplatesChannelTest extends IntegrationTestCase
         $this->channel->send($notifiable, $notification);
 
         TemplatesApi::assertSent($expectedMessage);
+        TemplatesApi::assertNothingValidated();
+        Mail::assertNothingSent();
+    }
+
+    /**
+     * @test
+     */
+    public function itCannotSendViaTheMailChannelWhenTheTemplateIsNotParseable(): void
+    {
+        ConfigFacade::enableSendingViaMailChannel();
+        $e = TemplatesApi::failToParseTemplateContent();
+        $notifiable = new MailRoutingNotifiable();
+        $notification = new TemplateNotification();
+
+        $this->expectExceptionObject(CouldNotSendNotification::templateContentIsNotParseable($e));
+
+        $this->channel->send($notifiable, $notification);
+    }
+
+    /**
+     * @test
+     */
+    public function itCannotSendViaTheMailChannelWhenTheTemplateMessageIsInvalid(): void
+    {
+        ConfigFacade::enableSendingViaMailChannel();
+        $validatedTemplateMessage = TemplatesApi::failToValidateTemplate();
+        $notifiable = new MailRoutingNotifiable();
+        $notification = new TemplateNotification();
+
+        $this->expectExceptionObject(CouldNotSendNotification::templateMessageIsInvalid($validatedTemplateMessage));
+
+        $this->channel->send($notifiable, $notification);
+    }
+
+    /**
+     * @test
+     * @dataProvider templateMessages
+     * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $expectMessage
+     */
+    public function itCanSendEmailTemplateMessagesViaTheMailChannel(
+        TemplateNotification $notification,
+        callable $expectMessage
+    ): void {
+        ConfigFacade::enableSendingViaMailChannel();
+        $notifiable = new MailRoutingNotifiable();
+        $expectedMessage = $expectMessage(
+            $notification->toPostmarkTemplate(),
+            $notifiable,
+            $this->config->defaultSender(),
+        );
+
+        $this->channel->send($notifiable, $notification);
+
+        TemplatesApi::assertValidated($expectedMessage);
+        TemplatesApi::assertNothingSent();
+        Mail::assertSent(RenderedEmailTemplateMail::class, function (RenderedEmailTemplateMail $mail) use (
+            $notifiable,
+            $expectedMessage
+        ): bool {
+            $this->assertTrue($mail->hasTo((string) $expectedMessage->recipients));
+
+            if ($expectedMessage->bcc) {
+                $this->assertTrue($mail->hasBcc((string) $expectedMessage->bcc));
+            }
+
+            $this->assertSame(
+                FakeTemplatesApi::RENDERED_TEMPLATE['Subject']['RenderedContent'],
+                $mail->subject,
+            );
+            $this->assertSame(
+                FakeTemplatesApi::RENDERED_TEMPLATE['HtmlBody']['RenderedContent'],
+                Closure::bind(fn () => $mail->html, null, RenderedEmailTemplateMail::class)(),
+            );
+            $this->assertSame(
+                FakeTemplatesApi::RENDERED_TEMPLATE['TextBody']['RenderedContent'],
+                $mail->textView,
+            );
+
+            return true;
+        });
     }
 }

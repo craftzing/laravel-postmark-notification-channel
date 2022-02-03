@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-
 interface TemplatesApi
 {
     public const RECIPIENT_IS_INACTIVE = 406;

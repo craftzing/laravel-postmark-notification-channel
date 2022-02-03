@@ -6,7 +6,7 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Illuminate\Mail\Mailable;
 
-final class RenderedEmailTemplate extends Mailable
+final class RenderedEmailTemplateMail extends Mailable
 {
     public static function fromRenderedContent(string $subject, string $html, string $text): self
     {
@@ -16,8 +16,8 @@ final class RenderedEmailTemplate extends Mailable
             ->text($text);
     }
 
-    public function build(): self
-    {
-        return $this;
-    }
+//    public function build(): self
+//    {
+//        return $this;
+//    }
 }

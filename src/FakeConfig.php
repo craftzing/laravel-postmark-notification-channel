@@ -16,6 +16,7 @@ final class FakeConfig implements Config
     private string $defaultSenderEmail;
     private string $defaultSenderName;
     private ?string $postmarkBaseUri;
+    private bool $shouldSendViaMailChannel = false;
 
     public function __construct(Generator $faker)
     {
@@ -42,6 +43,11 @@ final class FakeConfig implements Config
 
     public function shouldSendViaMailChannel(): bool
     {
-        return false;
+        return $this->shouldSendViaMailChannel;
+    }
+
+    public function enableSendingViaMailChannel(): void
+    {
+        $this->shouldSendViaMailChannel = true;
     }
 }

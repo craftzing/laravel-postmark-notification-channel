@@ -76,10 +76,10 @@ final class SdkTemplatesApi implements TemplatesApi
             // an empty Template model. This allows us to retrieve the complete suggested model, so we can validate
             // the provided Template model against it using our own implementation, which is much less forgiving.
             $suggestedTemplateModel = $this->validateTemplate(
-                    $template,
-                    [],
-                    $message->inlineCss,
-                )['SuggestedTemplateModel'] ?? [];
+                $template,
+                [],
+                $message->inlineCss,
+            )['SuggestedTemplateModel'] ?? [];
         } catch (PostmarkException $e) {
             if ($e->postmarkApiErrorCode === self::TEMPLATE_ID_INVALID_OR_NOT_FOUND) {
                 throw RequestToPostmarkTemplatesApiFailed::templateIdIsInvalidOrNotFound($e);

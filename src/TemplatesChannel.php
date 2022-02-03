@@ -64,10 +64,10 @@ final class TemplatesChannel
         $this->mailer
             ->to((string) $message->recipients)
             ->bcc((string) $message->bcc)
-            ->send(RenderedEmailTemplate::fromRenderedContent(
+            ->send(RenderedEmailTemplateMail::fromRenderedContent(
                 $validatedMessage->subject,
-                $validatedMessage->htmlBody, //(string) $response['HtmlBody']['RenderedContent'],
-                $validatedMessage->textBody, //(string) $response['TextBody']['RenderedContent'],
+                $validatedMessage->htmlBody,
+                $validatedMessage->textBody,
             ));
     }
 

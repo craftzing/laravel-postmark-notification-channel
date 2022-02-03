@@ -118,14 +118,14 @@ final class TemplatesChannelE2ETest extends IntegrationTestCase
 
         $this->channel->send($notifiable, new TemplateNotification($message));
 
-        Mail::assertSent(RenderedEmailTemplate::class, function (RenderedEmailTemplate $mail) use (
+        Mail::assertSent(RenderedEmailTemplateMail::class, function (RenderedEmailTemplateMail $mail) use (
             $notifiable,
             $bcc
         ): bool {
             $this->assertTrue($mail->hasTo($notifiable->email));
             $this->assertTrue($mail->hasBcc((string) $bcc));
             $this->assertSame('CI template', $mail->subject);
-            $this->assertNotEmpty(Closure::bind(fn () => $mail->html, null, RenderedEmailTemplate::class)());
+            $this->assertNotEmpty(Closure::bind(fn () => $mail->html, null, RenderedEmailTemplateMail::class)());
             $this->assertNotEmpty($mail->textView);
 
             return true;

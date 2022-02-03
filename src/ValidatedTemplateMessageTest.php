@@ -14,18 +14,6 @@ final class ValidatedTemplateMessageTest extends TestCase
 {
     use WithFaker;
 
-    private const RENDERED_TEMPLATE = [
-        'Subject' => [
-            'RenderedContent' => 'Some rendered subject',
-        ],
-        'HtmlBody' => [
-            'RenderedContent' => 'Some rendered HTML',
-        ],
-        'TextBody' => [
-            'RenderedContent' => 'Some rendered text',
-        ],
-    ];
-
     private const SUGGESTED_MODEL = [
         'project' => 'project_Value',
         'user' => [
@@ -87,14 +75,14 @@ final class ValidatedTemplateMessageTest extends TestCase
     public function itCanBeConstructedBySuccessfullyValidatingATemplateModelAgainstASuggestedModel(
         DynamicTemplateModel $templateModel
     ): void {
-        $renderedTemplate = new DynamicResponseModel(self::RENDERED_TEMPLATE);
+        $renderedTemplate = new DynamicResponseModel(FakeTemplatesApi::RENDERED_TEMPLATE);
         $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
 
         $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
 
-        $this->assertSame(self::RENDERED_TEMPLATE['Subject']['RenderedContent'], $validatedMessage->subject);
-        $this->assertSame(self::RENDERED_TEMPLATE['HtmlBody']['RenderedContent'], $validatedMessage->htmlBody);
-        $this->assertSame(self::RENDERED_TEMPLATE['TextBody']['RenderedContent'], $validatedMessage->textBody);
+        $this->assertSame(FakeTemplatesApi::RENDERED_TEMPLATE['Subject']['RenderedContent'], $validatedMessage->subject);
+        $this->assertSame(FakeTemplatesApi::RENDERED_TEMPLATE['HtmlBody']['RenderedContent'], $validatedMessage->htmlBody);
+        $this->assertSame(FakeTemplatesApi::RENDERED_TEMPLATE['TextBody']['RenderedContent'], $validatedMessage->textBody);
         $this->assertEmpty($validatedMessage->missingVariables);
         $this->assertEmpty($validatedMessage->invalidVariables);
         $this->assertFalse($validatedMessage->isInvalid());
@@ -199,7 +187,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         array $expectedMissing,
         array $expectedInvalid
     ): void {
-        $renderedTemplate = new DynamicResponseModel(self::RENDERED_TEMPLATE);
+        $renderedTemplate = new DynamicResponseModel(FakeTemplatesApi::RENDERED_TEMPLATE);
         $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
 
         $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
