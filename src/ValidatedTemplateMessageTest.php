@@ -10,9 +10,21 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\DynamicResponseModel;
 
-final class ValidatedTemplateModelTest extends TestCase
+final class ValidatedTemplateMessageTest extends TestCase
 {
     use WithFaker;
+
+    private const RENDERED_TEMPLATE = [
+        'Subject' => [
+            'RenderedContent' => 'Some rendered subject',
+        ],
+        'HtmlBody' => [
+            'RenderedContent' => 'Some rendered HTML',
+        ],
+        'TextBody' => [
+            'RenderedContent' => 'Some rendered text',
+        ],
+    ];
 
     private const SUGGESTED_MODEL = [
         'project' => 'project_Value',
@@ -75,13 +87,17 @@ final class ValidatedTemplateModelTest extends TestCase
     public function itCanBeConstructedBySuccessfullyValidatingATemplateModelAgainstASuggestedModel(
         DynamicTemplateModel $templateModel
     ): void {
+        $renderedTemplate = new DynamicResponseModel(self::RENDERED_TEMPLATE);
         $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
 
-        $validatedModel = ValidatedTemplateModel::validate($templateModel, $suggestedModel);
+        $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
 
-        $this->assertEmpty($validatedModel->missing);
-        $this->assertEmpty($validatedModel->invalid);
-        $this->assertFalse($validatedModel->isIncompleteOrInvalid());
+        $this->assertSame(self::RENDERED_TEMPLATE['Subject']['RenderedContent'], $validatedMessage->subject);
+        $this->assertSame(self::RENDERED_TEMPLATE['HtmlBody']['RenderedContent'], $validatedMessage->htmlBody);
+        $this->assertSame(self::RENDERED_TEMPLATE['TextBody']['RenderedContent'], $validatedMessage->textBody);
+        $this->assertEmpty($validatedMessage->missingVariables);
+        $this->assertEmpty($validatedMessage->invalidVariables);
+        $this->assertFalse($validatedMessage->isInvalid());
     }
 
     public function failedValidation(): Generator
@@ -183,12 +199,13 @@ final class ValidatedTemplateModelTest extends TestCase
         array $expectedMissing,
         array $expectedInvalid
     ): void {
+        $renderedTemplate = new DynamicResponseModel(self::RENDERED_TEMPLATE);
         $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
 
-        $validatedModel = ValidatedTemplateModel::validate($templateModel, $suggestedModel);
+        $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
 
-        $this->assertEquals($expectedMissing, $validatedModel->missing);
-        $this->assertEquals($expectedInvalid, $validatedModel->invalid);
-        $this->assertTrue($validatedModel->isIncompleteOrInvalid());
+        $this->assertEquals($expectedMissing, $validatedMessage->missingVariables);
+        $this->assertEquals($expectedInvalid, $validatedMessage->invalidVariables);
+        $this->assertTrue($validatedMessage->isInvalid());
     }
 }

@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Facade;
 use Postmark\PostmarkClient;
 
 /**
- * @method static void assertSendEmailWithTemplate(TemplateMessage $message)
- * @see FakePostmarkClient::assertSendEmailWithTemplate
+ * @method static void assertSentEmailWithTemplate(TemplateMessage $message)
+ * @see FakePostmarkClient::assertSentEmailWithTemplate
  *
  * @method static \Postmark\Models\PostmarkException respondWithInactiveRecipientError
  * @see FakePostmarkClient::respondWithInactiveRecipientError

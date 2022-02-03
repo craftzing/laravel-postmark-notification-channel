@@ -4,64 +4,29 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Exceptions;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateModel;
+use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateMessage;
 use Exception;
-use Postmark\Models\PostmarkException;
 
 use function json_encode;
 
 final class CouldNotSendNotification extends Exception
 {
-    public static function recipientIsInactive(PostmarkException $postmarkException): self
+    public static function requestToPostmarkApiFailed(RequestToPostmarkTemplatesApiFailed $e): self
     {
-        return new self(
-            'One or more recipients are inactive: ' .
-            "`$postmarkException->httpStatusCode - $postmarkException->message " .
-            "(API error code: $postmarkException->postmarkApiErrorCode)`",
-        );
+        return new self("The request to the Postmark failed while trying to send the notification. {$e->getMessage()}");
     }
 
-    public static function invalidTemplateModel(PostmarkException $postmarkException): self
+    public static function templateContentIsNotParseable(TemplateContentIsNotParseable $e): self
     {
-        return new self(
-            'The template model is invalid: ' .
-            "`$postmarkException->httpStatusCode - $postmarkException->message " .
-            "(API error code: $postmarkException->postmarkApiErrorCode)`",
-        );
+        return new self($e->getMessage());
     }
 
-    public static function templateIdIsInvalidOrNotFound(PostmarkException $postmarkException): self
+    public static function templateMessageIsInvalid(ValidatedTemplateMessage $model): self
     {
         return new self(
-            'The TemplateId is invalid or not found: ' .
-            "`$postmarkException->httpStatusCode - $postmarkException->message " .
-            "(API error code: $postmarkException->postmarkApiErrorCode)`",
-        );
-    }
-
-    public static function templateContentIsInvalid(): self
-    {
-        return new self('The Template content is invalid.');
-    }
-
-    public static function templateModelIsIncompleteOrInvalid(ValidatedTemplateModel $model): self
-    {
-        return new self(
-            'The Template model is either incomplete or invalid. ' .
-            'Make sure to adhere to the suggested template model: \n\n' .
-            'MISSING:' . json_encode($model->missing) .
-            'INVALID:' . json_encode($model->invalid)
-        );
-    }
-
-    public static function requestToPostmarkApiFailed(PostmarkException $postmarkException): self
-    {
-        return new self(
-            'The request to the Postmark failed while trying to send the notification: ' .
-            "`$postmarkException->httpStatusCode - $postmarkException->message " .
-            "(API error code: $postmarkException->postmarkApiErrorCode)`",
-            0,
-            $postmarkException,
+            'The Template model is invalid. Make sure to adhere to the suggested template model: \n\n' .
+            'MISSING:' . json_encode($model->missingVariables) .
+            'INVALID:' . json_encode($model->invalidVariables)
         );
     }
 }

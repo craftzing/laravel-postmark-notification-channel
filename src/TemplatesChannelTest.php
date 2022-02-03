@@ -13,7 +13,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\MailRoutingNotifiable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\TemplateNotification;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\TemplatesApi as TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Generator;
 use Illuminate\Notifications\Notification;
@@ -30,6 +30,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
     public function setupChannel(): void
     {
         $this->afterApplicationCreated(function (): void {
+            TemplatesApi::fake();
             $this->config = $this->app[Config::class];
             $this->channel = $this->app[TemplatesChannel::class];
         });
@@ -61,27 +62,13 @@ final class TemplatesChannelTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itFailsWhenTheRecipientIsInactive(): void
+    public function itFailsWhenTheRequestToPostmarkTemplatesApiFailed(): void
     {
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
-        $postmarkException = Postmark::respondWithInactiveRecipientError();
+        $e = TemplatesApi::failRequestToPostmark();
 
-        $this->expectExceptionObject(CouldNotSendNotification::recipientIsInactive($postmarkException));
-
-        $this->channel->send($notifiable, $notification);
-    }
-
-    /**
-     * @test
-     */
-    public function itFailsWhenTheRequestToThePostmarkApiFailed(): void
-    {
-        $notifiable = new MailRoutingNotifiable();
-        $notification = new TemplateNotification();
-        $postmarkException = Postmark::respondWithError();
-
-        $this->expectExceptionObject(CouldNotSendNotification::requestToPostmarkApiFailed($postmarkException));
+        $this->expectExceptionObject(CouldNotSendNotification::requestToPostmarkApiFailed($e));
 
         $this->channel->send($notifiable, $notification);
     }
@@ -161,6 +148,6 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         $this->channel->send($notifiable, $notification);
 
-        Postmark::assertSendEmailWithTemplate($expectedMessage);
+        TemplatesApi::assertSent($expectedMessage);
     }
 }

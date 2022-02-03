@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\PostmarkErrorCodes;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
 use Postmark\Models\PostmarkException;
@@ -17,12 +18,12 @@ use function tap;
 
 final class FakePostmarkClient extends PostmarkClient
 {
+    use FakesExceptions;
+
     /**
      * @var mixed[]
      */
     private array $emailSentWithTemplate = [];
-
-    private ?PostmarkException $exception = null;
 
     public function __construct(string $serverToken = 'some-fake-token')
     {
@@ -67,14 +68,12 @@ final class FakePostmarkClient extends PostmarkClient
             'messageStream',
         );
 
-        if ($this->exception) {
-            throw $this->exception;
-        }
+        $this->throwExceptionWhenDefined();
 
         return new DynamicResponseModel([]);
     }
 
-    public function assertSendEmailWithTemplate(TemplateMessage $message): void
+    public function assertSentEmailWithTemplate(TemplateMessage $message): void
     {
         Assert::assertNotNull($this->emailSentWithTemplate, 'Email was not sent with Postmark template.');
         Assert::assertSame($this->emailSentWithTemplate['from'], $message->sender->toString());
@@ -97,7 +96,7 @@ final class FakePostmarkClient extends PostmarkClient
         return $this->exception = tap(new PostmarkException(), function (PostmarkException $e): void {
             $e->httpStatusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
             $e->message = 'Recipient is inactive';
-            $e->postmarkApiErrorCode = PostmarkErrorCodes::RECIPIENT_IS_INACTIVE;
+            $e->postmarkApiErrorCode = TemplatesApi::RECIPIENT_IS_INACTIVE;
         });
     }
 

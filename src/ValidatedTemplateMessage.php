@@ -15,22 +15,47 @@ use function gettype;
 use function head;
 use function is_array;
 
-final class ValidatedTemplateModel
+final class ValidatedTemplateMessage
 {
     /**
      * @readonly
-     * @var array<mixed>
      */
-    public array $missing = [];
+    public string $subject;
+
+    /**
+     * @readonly
+     */
+    public string $htmlBody;
+
+    /**
+     * @readonly
+     */
+    public string $textBody;
 
     /**
      * @readonly
      * @var array<mixed>
      */
-    public array $invalid = [];
+    public array $missingVariables = [];
 
-    private function __construct(DynamicResponseModel $model, DynamicResponseModel $suggestedModel)
-    {
+    /**
+     * @readonly
+     * @var array<mixed>
+     */
+    public array $invalidVariables = [];
+
+    private DynamicResponseModel $renderedTemplate;
+
+    private function __construct(
+        DynamicResponseModel $renderedTemplate,
+        DynamicResponseModel $model,
+        DynamicResponseModel $suggestedModel
+    ) {
+        $this->subject = (string) $renderedTemplate['Subject']['RenderedContent'];
+        $this->htmlBody = (string) $renderedTemplate['HtmlBody']['RenderedContent'];
+        $this->textBody = (string) $renderedTemplate['TextBody']['RenderedContent'];
+        $this->renderedTemplate = $renderedTemplate;
+
         foreach ($suggestedModel as $key => $suggestedValue) {
             $suggestedValue = $this->resolveValue($suggestedValue);
 
@@ -48,12 +73,15 @@ final class ValidatedTemplateModel
         }
     }
 
-    public static function validate(TemplateModel $model, DynamicResponseModel $suggestedModel): self
-    {
+    public static function validate(
+        DynamicResponseModel $renderedTemplate,
+        TemplateModel $model,
+        DynamicResponseModel $suggestedModel
+    ): self {
         // Because of the intricacies of the DynamicResponseModel implementation, we should
         // ensure to compare the actual model to the suggested model after converting it
         // to a DynamicResponseModel. This way, both result sets work identically.
-        return new self(new DynamicResponseModel($model->attributes()), $suggestedModel);
+        return new self($renderedTemplate, new DynamicResponseModel($model->attributes()), $suggestedModel);
     }
 
     /**
@@ -66,7 +94,7 @@ final class ValidatedTemplateModel
             return false;
         }
 
-        $this->missing[$key] = $suggestedValue;
+        $this->missingVariables[$key] = $suggestedValue;
 
         return true;
     }
@@ -79,7 +107,7 @@ final class ValidatedTemplateModel
     private function isMarkedAsInvalid($key, $providedValue, $suggestedValue): bool
     {
         if (gettype($providedValue) !== gettype($suggestedValue)) {
-            $this->invalid[$key] = $suggestedValue;
+            $this->invalidVariables[$key] = $suggestedValue;
 
             return true;
         }
@@ -101,7 +129,7 @@ final class ValidatedTemplateModel
             return false;
         }
 
-        $this->invalid[$key] = $suggestedValue;
+        $this->invalidVariables[$key] = $suggestedValue;
 
         return true;
     }
@@ -120,6 +148,7 @@ final class ValidatedTemplateModel
 
         if (Arr::isAssoc($suggestedValue)) {
             $this->nestValidationErrorsUnderAttribute($key, new self(
+                $this->renderedTemplate,
                 new DynamicResponseModel($providedValue),
                 new DynamicResponseModel($suggestedValue),
             ));
@@ -139,6 +168,7 @@ final class ValidatedTemplateModel
 
         foreach ($suggestedValue as $index => $suggestedItemValue) {
             $this->nestValidationErrorsUnderAttribute("$key.$index", new self(
+                $this->renderedTemplate,
                 new DynamicResponseModel($providedValue[$index]),
                 new DynamicResponseModel($suggestedItemValue),
             ));
@@ -147,12 +177,12 @@ final class ValidatedTemplateModel
 
     private function nestValidationErrorsUnderAttribute(string $key, self $nestedInstance): void
     {
-        if ($nestedInstance->missing) {
-            Arr::set($this->missing, $key, $nestedInstance->missing);
+        if ($nestedInstance->missingVariables) {
+            Arr::set($this->missingVariables, $key, $nestedInstance->missingVariables);
         }
 
-        if ($nestedInstance->invalid) {
-            Arr::set($this->invalid, $key, $nestedInstance->invalid);
+        if ($nestedInstance->invalidVariables) {
+            Arr::set($this->invalidVariables, $key, $nestedInstance->invalidVariables);
         }
     }
 
@@ -181,13 +211,13 @@ final class ValidatedTemplateModel
         return $arrayValues;
     }
 
-    public function isIncompleteOrInvalid(): bool
+    public function isInvalid(): bool
     {
-        if ($this->invalid !== []) {
+        if ($this->invalidVariables !== []) {
             return true;
         }
 
-        if ($this->missing !== []) {
+        if ($this->missingVariables !== []) {
             return true;
         }
 
