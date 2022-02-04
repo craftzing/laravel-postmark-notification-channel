@@ -216,6 +216,11 @@ final class ValidatedTemplateMessage
         return $arrayValues;
     }
 
+    public function isContentParseable(): bool
+    {
+        return $this->renderedTemplate['AllContentIsValid'] ?? false;
+    }
+
     public function isInvalid(): bool
     {
         if ($this->invalidVariables !== []) {

@@ -31,7 +31,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ],
     ];
 
-    public function successfulValidation(): Generator
+    public function validTemplateModels(): Generator
     {
         $this->setupFaker();
 
@@ -70,11 +70,10 @@ final class ValidatedTemplateMessageTest extends TestCase
 
     /**
      * @test
-     * @dataProvider successfulValidation
+     * @dataProvider validTemplateModels
      */
-    public function itCanBeConstructedBySuccessfullyValidatingATemplateModelAgainstASuggestedModel(
-        DynamicTemplateModel $templateModel
-    ): void {
+    public function itCanBeConstructedValidTemplateModels(DynamicTemplateModel $templateModel): void
+    {
         $renderedTemplate = new DynamicResponseModel(FakeTemplatesApi::RENDERED_TEMPLATE);
         $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
 
@@ -88,7 +87,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         $this->assertFalse($validatedMessage->isInvalid());
     }
 
-    public function failedValidation(): Generator
+    public function invalidTemplateModels(): Generator
     {
         $this->setupFaker();
 
@@ -180,9 +179,9 @@ final class ValidatedTemplateMessageTest extends TestCase
 
     /**
      * @test
-     * @dataProvider failedValidation
+     * @dataProvider invalidTemplateModels
      */
-    public function itCanBeConstructedByFailingValidatingATemplateModelAgainstASuggestedModel(
+    public function itCanBeConstructedFromInvalidTemplateModels(
         DynamicTemplateModel $templateModel,
         array $expectedMissing,
         array $expectedInvalid
@@ -195,5 +194,28 @@ final class ValidatedTemplateMessageTest extends TestCase
         $this->assertEquals($expectedMissing, $validatedMessage->missingVariables);
         $this->assertEquals($expectedInvalid, $validatedMessage->invalidVariables);
         $this->assertTrue($validatedMessage->isInvalid());
+    }
+
+    public function isContentParseable(): Generator
+    {
+        yield 'Template content is parseable' => [true];
+        yield 'Template content is not parseable' => [false];
+    }
+
+    /**
+     * @test
+     * @dataProvider isContentParseable
+     */
+    public function itCanCheckIfTheTemplateContentIsParseable(bool $isContentParseable): void
+    {
+        $validatedMessage = ValidatedTemplateMessage::validate(
+            new DynamicResponseModel([
+                'AllContentIsValid' => $isContentParseable,
+            ] + FakeTemplatesApi::RENDERED_TEMPLATE),
+            DynamicTemplateModel::fromAttributes([]),
+            new DynamicResponseModel(self::SUGGESTED_MODEL),
+        );
+
+        $this->assertEquals($isContentParseable, $validatedMessage->isContentParseable());
     }
 }
