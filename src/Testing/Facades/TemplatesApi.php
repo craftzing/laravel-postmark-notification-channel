@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\RequestToPostmarkTemplatesApiFailed;
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\TemplateContentIsNotParseable;
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi as TemplatesApiInterface;
@@ -19,20 +19,23 @@ use Illuminate\Support\Facades\Facade;
  * @method static void assertNothingSent()
  * @see FakeTemplatesApi::assertNothingSent
  *
+ * @method static CouldNotSendNotification failToSend()
+ * @see FakeTemplatesApi::failToSend
+ *
  * @method static void assertValidated(TemplateMessage $message)
  * @see FakeTemplatesApi::assertValidated
- *
- * @method static ValidatedTemplateMessage failToValidateTemplate()
- * @see FakeTemplatesApi::failToValidateTemplate
  *
  * @method static void assertNothingValidated()
  * @see FakeTemplatesApi::assertNothingValidated
  *
- * @method static RequestToPostmarkTemplatesApiFailed failRequestToPostmark()
- * @see FakeTemplatesApi::failRequestToPostmark
+ * @method static CouldNotValidateNotification failToValidate()
+ * @see FakeTemplatesApi::failToValidate
  *
- * @method static TemplateContentIsNotParseable failToParseTemplateContent()
- * @see FakeTemplatesApi::failToParseTemplateContent
+ * @method static ValidatedTemplateMessage respondWithNonParseableTemplateContent()
+ * @see FakeTemplatesApi::respondWithNonParseableTemplateContent
+ *
+ * @method static ValidatedTemplateMessage respondWithInvalidTemplateMessage()
+ * @see FakeTemplatesApi::respondWithInvalidTemplateMessage
  */
 final class TemplatesApi extends Facade
 {

@@ -86,14 +86,14 @@ final class TemplatesChannelTest extends IntegrationTestCase
      * @dataProvider channelConfigurations
      * @param callable(): void $configureChannel
      */
-    public function itFailsWhenARequestToPostmarkTemplatesApiFailed(callable $configureChannel): void
+    public function itFailsWhenTheTemplatesApiCouldNotSendTheNotification(callable $configureChannel): void
     {
         $configureChannel();
-        $e = TemplatesApi::failRequestToPostmark();
+        $e = TemplatesApi::failToSend();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
 
-        $this->expectExceptionObject(CouldNotSendNotification::requestToPostmarkApiFailed($e));
+        $this->expectExceptionObject($e);
 
         $this->channel->send($notifiable, $notification);
     }
@@ -160,7 +160,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      * @dataProvider templateMessages
      * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $expectMessage
      */
-    public function itCanSendEmailTemplateMessagesViaTheTemplatesAPI(
+    public function itCanSendEmailTemplateMessagesViaTheTemplatesApi(
         TemplateNotification $notification,
         callable $expectMessage
     ): void {
@@ -181,14 +181,14 @@ final class TemplatesChannelTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCannotSendViaTheMailChannelWhenTheTemplateIsNotParseable(): void
+    public function itFailsWhenTheTemplatesApiFailedToValidateTheTemplateWhileSendingViaTheMailChannel(): void
     {
         ConfigFacade::enableSendingViaMailChannel();
-        $e = TemplatesApi::failToParseTemplateContent();
+        $e = TemplatesApi::failToValidate();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
 
-        $this->expectExceptionObject(CouldNotSendNotification::templateContentIsNotParseable($e));
+        $this->expectExceptionObject($e);
 
         $this->channel->send($notifiable, $notification);
     }
@@ -196,14 +196,33 @@ final class TemplatesChannelTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCannotSendViaTheMailChannelWhenTheTemplateMessageIsInvalid(): void
+    public function itFailsWhenTheTemplateContentIsNotParseableWhileSendingViaTheMailChannel(): void
     {
         ConfigFacade::enableSendingViaMailChannel();
-        $validatedTemplateMessage = TemplatesApi::failToValidateTemplate();
+        $validatedTemplateMessage = TemplatesApi::respondWithNonParseableTemplateContent();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
 
-        $this->expectExceptionObject(CouldNotSendNotification::templateMessageIsInvalid($validatedTemplateMessage));
+        $this->expectExceptionObject(
+            CouldNotSendNotification::templateContentIsNotParseable($validatedTemplateMessage),
+        );
+
+        $this->channel->send($notifiable, $notification);
+    }
+
+    /**
+     * @test
+     */
+    public function itFailsWhenTheTemplateMessageIsInvalidWhileSendingViaTheMailChannel(): void
+    {
+        ConfigFacade::enableSendingViaMailChannel();
+        $validatedTemplateMessage = TemplatesApi::respondWithInvalidTemplateMessage();
+        $notifiable = new MailRoutingNotifiable();
+        $notification = new TemplateNotification();
+
+        $this->expectExceptionObject(
+            CouldNotSendNotification::templateMessageIsInvalid($validatedTemplateMessage),
+        );
 
         $this->channel->send($notifiable, $notification);
     }

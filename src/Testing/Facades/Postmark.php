@@ -12,12 +12,6 @@ use Postmark\PostmarkClient;
 /**
  * @method static void assertSentEmailWithTemplate(TemplateMessage $message)
  * @see FakePostmarkClient::assertSentEmailWithTemplate
- *
- * @method static \Postmark\Models\PostmarkException respondWithInactiveRecipientError
- * @see FakePostmarkClient::respondWithInactiveRecipientError
- *
- * @method static \Postmark\Models\PostmarkException respondWithError
- * @see FakePostmarkClient::respondWithError
  */
 final class Postmark extends Facade
 {

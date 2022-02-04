@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\RequestToPostmarkTemplatesApiFailed;
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\TemplateContentIsNotParseable;
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
+use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
 use Postmark\Models\DynamicResponseModel;
 use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
@@ -51,11 +51,7 @@ final class SdkTemplatesApi implements TemplatesApi
                 $message->messageStream,
             );
         } catch (PostmarkException $e) {
-            if ($e->postmarkApiErrorCode === self::RECIPIENT_IS_INACTIVE) {
-                throw RequestToPostmarkTemplatesApiFailed::recipientIsInactive($e);
-            }
-
-            throw new RequestToPostmarkTemplatesApiFailed($e);
+            throw CouldNotSendNotification::requestToPostmarkApiFailed($e);
         }
     }
 
@@ -75,28 +71,16 @@ final class SdkTemplatesApi implements TemplatesApi
             // Postmark will just accept the empty array. Therefore, we hit the validation endpoint once again with
             // an empty Template model. This allows us to retrieve the complete suggested model, so we can validate
             // the provided Template model against it using our own implementation, which is much less forgiving.
-            $suggestedTemplateModel = $this->validateTemplate(
-                $template,
-                [],
-                $message->inlineCss,
-            )['SuggestedTemplateModel'] ?? [];
+            $suggestedTemplate = $this->validateTemplate($template, [], $message->inlineCss);
         } catch (PostmarkException $e) {
-            if ($e->postmarkApiErrorCode === self::TEMPLATE_ID_INVALID_OR_NOT_FOUND) {
-                throw RequestToPostmarkTemplatesApiFailed::templateIdIsInvalidOrNotFound($e);
-            }
-
-            if ($e->postmarkApiErrorCode === self::INVALID_TEMPLATE_MODEL) {
-                throw RequestToPostmarkTemplatesApiFailed::invalidTemplateModel($e);
-            }
-
-            throw new RequestToPostmarkTemplatesApiFailed($e);
+            throw CouldNotValidateNotification::requestToPostmarkApiFailed($e);
         }
 
-        if (! $response['AllContentIsValid']) {
-            throw TemplateContentIsNotParseable::fromTemplateResource($template);
-        }
-
-        return ValidatedTemplateMessage::validate($response, $message->model, $suggestedTemplateModel);
+        return ValidatedTemplateMessage::validate(
+            $response,
+            $message->model,
+            $suggestedTemplate['SuggestedTemplateModel'] ?? [],
+        );
     }
 
     /**

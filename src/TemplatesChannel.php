@@ -6,8 +6,6 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CannotConvertNotificationToPostmarkTemplate;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\RequestToPostmarkTemplatesApiFailed;
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\TemplateContentIsNotParseable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Notifications\Notification;
@@ -34,27 +32,16 @@ final class TemplatesChannel
         if ($this->config->shouldSendViaMailChannel()) {
             $this->sendViaMailChannel($message);
         } else {
-            $this->sendViaTemplatesApi($message);
-        }
-    }
-
-    private function sendViaTemplatesApi(TemplateMessage $message): void
-    {
-        try {
             $this->templatesApi->send($message);
-        } catch (RequestToPostmarkTemplatesApiFailed $e) {
-            throw CouldNotSendNotification::requestToPostmarkApiFailed($e);
         }
     }
 
     private function sendViaMailChannel(TemplateMessage $message): void
     {
-        try {
-            $validatedMessage = $this->templatesApi->validate($message);
-        } catch (RequestToPostmarkTemplatesApiFailed $e) {
-            throw CouldNotSendNotification::requestToPostmarkApiFailed($e);
-        } catch (TemplateContentIsNotParseable $e) {
-            throw CouldNotSendNotification::templateContentIsNotParseable($e);
+        $validatedMessage = $this->templatesApi->validate($message);
+
+        if (! $validatedMessage->isContentParseable()) {
+            throw CouldNotSendNotification::templateContentIsNotParseable($validatedMessage);
         }
 
         if ($validatedMessage->isInvalid()) {

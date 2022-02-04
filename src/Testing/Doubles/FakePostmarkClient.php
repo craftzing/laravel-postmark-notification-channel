@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
-use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
-use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
-use Symfony\Component\HttpFoundation\Response;
 
 use function compact;
-use function tap;
 
 final class FakePostmarkClient extends PostmarkClient
 {
@@ -89,19 +85,5 @@ final class FakePostmarkClient extends PostmarkClient
         Assert::assertSame($this->emailSentWithTemplate['trackLinks'], ((string) $message->trackLinks) ?: null);
         Assert::assertSame($this->emailSentWithTemplate['metadata'], $message->metadata);
         Assert::assertSame($this->emailSentWithTemplate['messageStream'], $message->messageStream);
-    }
-
-    public function respondWithInactiveRecipientError(): PostmarkException
-    {
-        return $this->exception = tap(new PostmarkException(), function (PostmarkException $e): void {
-            $e->httpStatusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
-            $e->message = 'Recipient is inactive';
-            $e->postmarkApiErrorCode = TemplatesApi::RECIPIENT_IS_INACTIVE;
-        });
-    }
-
-    public function respondWithError(): PostmarkException
-    {
-        return $this->exception = new PostmarkException();
     }
 }
