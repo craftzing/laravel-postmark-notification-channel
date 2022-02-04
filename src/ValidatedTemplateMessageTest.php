@@ -175,6 +175,28 @@ final class ValidatedTemplateMessageTest extends TestCase
             [],
             self::SUGGESTED_MODEL,
         ];
+
+        yield 'Template model contains nested attributes with an invalid type' => [
+            DynamicTemplateModel::fromAttributes([
+                'project' => $this->faker->word,
+                'user' => [
+                    'email' => $this->faker->email,
+                    'name' => $this->faker->firstName,
+                    'preferences' => [],
+                ],
+                'list' => [
+                    [
+                        'item' => [
+                            'foo' => 'bar',
+                        ],
+                    ],
+                ],
+            ]),
+            [],
+            [
+                'list' => self::SUGGESTED_MODEL['list'],
+            ],
+        ];
     }
 
     /**

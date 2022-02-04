@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
-use Generator;
 
 use function config;
 
