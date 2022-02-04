@@ -16,18 +16,7 @@ final class SdkTemplatesApi implements TemplatesApi
 
     public function __construct(Config $config, ?PostmarkClient $postmark = null)
     {
-        $this->postmark = $postmark ?: $this->createPostmarkClient($config);
-    }
-
-    private function createPostmarkClient(Config $config): PostmarkClient
-    {
-        $postmark = new PostmarkClient($config->postmarkToken());
-
-        if ($baseUri = $config->postmarkBaseUri()) {
-            $postmark::$BASE_URL = $baseUri;
-        }
-
-        return $postmark;
+        $this->postmark = $postmark ?: new PostmarkClient($config->postmarkToken());
     }
 
     public function send(TemplateMessage $message): void

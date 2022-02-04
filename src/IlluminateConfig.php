@@ -48,11 +48,6 @@ final class IlluminateConfig implements Config
         return $this->postmarkToken;
     }
 
-    public function postmarkBaseUri(): ?string
-    {
-        return $this->config->get('services.postmark.base_uri');
-    }
-
     public function defaultSender(): Sender
     {
         return Sender::fromEmail($this->defaultSenderEmail)->as($this->defaultSenderName);

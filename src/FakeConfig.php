@@ -15,7 +15,6 @@ final class FakeConfig implements Config
     private string $postmarkToken;
     private string $defaultSenderEmail;
     private string $defaultSenderName;
-    private ?string $postmarkBaseUri;
     private bool $shouldSendViaMailChannel = false;
 
     public function __construct(Generator $faker)
@@ -23,17 +22,11 @@ final class FakeConfig implements Config
         $this->postmarkToken = 'some-fake-token';
         $this->defaultSenderEmail = 'dev@craftzing.com';
         $this->defaultSenderName = $faker->name;
-        $this->postmarkBaseUri = null;
     }
 
     public function postmarkToken(): string
     {
         return $this->postmarkToken;
-    }
-
-    public function postmarkBaseUri(): ?string
-    {
-        return $this->postmarkBaseUri;
     }
 
     public function defaultSender(): Sender

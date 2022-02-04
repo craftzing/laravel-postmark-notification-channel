@@ -84,26 +84,6 @@ final class IlluminateConfigTest extends IntegrationTestCase
         $this->assertFalse($instance->shouldSendViaMailChannel());
     }
 
-    public function postmarkBaseUri(): Generator
-    {
-        yield 'Postmark base URI is undefined' => [null];
-        yield 'Postmark base URI is empty' => [''];
-        yield 'Postmark base URI is defined' => [$this->faker()->url];
-    }
-
-    /**
-     * @test
-     * @dataProvider postmarkBaseUri
-     */
-    public function itOptionallyReturnsAPostmarkBaseUri(?string $postmarkBaseUri): void
-    {
-        config($this->requiredConfig(['services.postmark.base_uri' => $postmarkBaseUri]));
-
-        $instance = $this->app[IlluminateConfig::class];
-
-        $this->assertSame($postmarkBaseUri, $instance->postmarkBaseUri());
-    }
-
     /**
      * @test
      */

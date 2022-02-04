@@ -10,8 +10,6 @@ interface Config
 {
     public function postmarkToken(): string;
 
-    public function postmarkBaseUri(): ?string;
-
     public function defaultSender(): Sender;
 
     public function shouldSendViaMailChannel(): bool;
