@@ -7,11 +7,15 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakePostmarkClient;
 use Illuminate\Support\Facades\Facade;
+use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
 
 /**
  * @method static void assertSentEmailWithTemplate(TemplateMessage $message)
  * @see FakePostmarkClient::assertSentEmailWithTemplate
+ *
+ * @method static PostmarkException failRequest()
+ * @see FakePostmarkClient::failRequest
  */
 final class Postmark extends Facade
 {

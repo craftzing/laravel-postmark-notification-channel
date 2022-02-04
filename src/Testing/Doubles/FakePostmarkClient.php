@@ -8,6 +8,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
+use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
 
 use function compact;
@@ -85,5 +86,10 @@ final class FakePostmarkClient extends PostmarkClient
         Assert::assertSame($this->emailSentWithTemplate['trackLinks'], ((string) $message->trackLinks) ?: null);
         Assert::assertSame($this->emailSentWithTemplate['metadata'], $message->metadata);
         Assert::assertSame($this->emailSentWithTemplate['messageStream'], $message->messageStream);
+    }
+
+    public function failRequest(): PostmarkException
+    {
+        return $this->exception = new PostmarkException();
     }
 }
