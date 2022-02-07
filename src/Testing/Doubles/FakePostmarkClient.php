@@ -13,6 +13,9 @@ use Postmark\PostmarkClient;
 
 use function compact;
 
+/**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ */
 final class FakePostmarkClient extends PostmarkClient
 {
     use FakesExceptions;

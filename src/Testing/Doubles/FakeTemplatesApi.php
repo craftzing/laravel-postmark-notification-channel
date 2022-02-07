@@ -16,7 +16,7 @@ use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
 
 /**
- * @internal This implementation should only be used for testing purposes.
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
  */
 final class FakeTemplatesApi implements TemplatesApi
 {

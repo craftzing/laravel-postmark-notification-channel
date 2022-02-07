@@ -11,6 +11,8 @@ use Postmark\Models\PostmarkException;
 use Postmark\PostmarkClient;
 
 /**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ *
  * @method static void assertSentEmailWithTemplate(TemplateMessage $message)
  * @see FakePostmarkClient::assertSentEmailWithTemplate
  *

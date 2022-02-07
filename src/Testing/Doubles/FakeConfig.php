@@ -9,7 +9,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Faker\Generator;
 
 /**
- * @internal This implementation should only be used for testing purposes.
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
  */
 final class FakeConfig implements Config
 {

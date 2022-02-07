@@ -13,6 +13,8 @@ use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateMessage;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ *
  * @method static void assertSent(TemplateMessage $message)
  * @see FakeTemplatesApi::assertSent
  *

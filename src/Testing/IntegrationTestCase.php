@@ -19,6 +19,9 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use function config;
 use function env;
 
+/**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ */
 abstract class IntegrationTestCase extends OrchestraTestCase
 {
     use WithFaker;

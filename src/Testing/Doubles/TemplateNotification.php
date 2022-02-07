@@ -10,6 +10,9 @@ use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Illuminate\Notifications\Notification;
 
+/**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ */
 final class TemplateNotification extends Notification
 {
     use WithFaker;

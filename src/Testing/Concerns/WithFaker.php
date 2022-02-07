@@ -7,6 +7,9 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns;
 use Faker\Factory;
 use Faker\Generator;
 
+/**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ */
 trait WithFaker
 {
     protected ?Generator $faker = null;

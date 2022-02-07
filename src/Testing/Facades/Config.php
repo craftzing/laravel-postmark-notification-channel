@@ -12,6 +12,8 @@ use LogicException;
 use function sprintf;
 
 /**
+ * @internal This implementation should only be used in tests, as it is export-ignored in the gitattributes.
+ *
  * @method static void enableSendingViaMailChannel()
  * @see FakeConfig::enableSendingViaMailChannel
  */
