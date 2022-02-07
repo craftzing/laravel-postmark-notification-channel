@@ -10,6 +10,8 @@ use Postmark\Models\PostmarkException;
 
 use function json_encode;
 
+use const JSON_PRETTY_PRINT;
+
 final class CouldNotSendNotification extends Exception
 {
     public static function requestToPostmarkApiFailed(PostmarkException $e): self
@@ -34,8 +36,8 @@ final class CouldNotSendNotification extends Exception
     {
         return new self(
             'The Template model is invalid. Make sure to adhere to the suggested template model: \n\n' .
-            'MISSING:' . json_encode($message->missingVariables) .
-            'INVALID:' . json_encode($message->invalidVariables)
+            'MISSING: ' . json_encode($message->missingVariables, JSON_PRETTY_PRINT) .
+            'INVALID: ' . json_encode($message->invalidVariables, JSON_PRETTY_PRINT)
         );
     }
 }
