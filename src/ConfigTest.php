@@ -12,7 +12,7 @@ use Generator;
 
 use function config;
 
-final class IlluminateConfigTest extends IntegrationTestCase
+final class ConfigTest extends IntegrationTestCase
 {
     private function requiredConfig(array $overwrites = []): array
     {
@@ -66,7 +66,7 @@ final class IlluminateConfigTest extends IntegrationTestCase
 
         $this->expectExceptionObject($exception);
 
-        $this->app[IlluminateConfig::class];
+        $this->app[Config::class];
     }
 
     /**
@@ -74,7 +74,7 @@ final class IlluminateConfigTest extends IntegrationTestCase
      */
     public function itCanReturnTheConfigurationValues(): void
     {
-        $instance = $this->app[IlluminateConfig::class];
+        $instance = $this->app[Config::class];
 
         $this->assertSame(config('services.postmark.token'), $instance->postmarkToken());
         $this->assertEquals(
@@ -89,9 +89,9 @@ final class IlluminateConfigTest extends IntegrationTestCase
      */
     public function itCanEnableToSendEmailTemplatesViaTheMailChannel(): void
     {
-        config(['postmark-notification-channel.send_via_mail_channel' => true]);
+        $this->enableSendingViaMailChannel();
 
-        $instance = $this->app[IlluminateConfig::class];
+        $instance = $this->app[Config::class];
 
         $this->assertTrue($instance->shouldSendViaMailChannel());
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as ConfigFacade;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Illuminate\Notifications\ChannelManager;
 
@@ -12,16 +11,6 @@ use function config;
 
 final class ServiceProviderTest extends IntegrationTestCase
 {
-    /**
-     * @before
-     */
-    public function dontFakeConfig(): void
-    {
-        $this->afterApplicationCreated(function (): void {
-            ConfigFacade::dontFake();
-        });
-    }
-
     /**
      * @test
      */
@@ -39,7 +28,7 @@ final class ServiceProviderTest extends IntegrationTestCase
     {
         $config = $this->app[Config::class];
 
-        $this->assertInstanceOf(IlluminateConfig::class, $config);
+        $this->assertInstanceOf(Config::class, $config);
     }
 
     /**

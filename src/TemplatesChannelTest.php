@@ -15,7 +15,6 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\MailRoutingNotifiable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\TemplateNotification;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as ConfigFacade;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\TemplatesApi as TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Generator;
@@ -58,7 +57,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'Send via mail channel' => [
             function (): void {
-                ConfigFacade::enableSendingViaMailChannel();
+                $this->enableSendingViaMailChannel();
             },
         ];
     }
@@ -184,7 +183,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      */
     public function itFailsWhenTheTemplatesApiFailedToValidateTheTemplateWhileSendingViaTheMailChannel(): void
     {
-        ConfigFacade::enableSendingViaMailChannel();
+        $this->enableSendingViaMailChannel();
         $e = TemplatesApi::failToValidate();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
@@ -199,7 +198,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      */
     public function itFailsWhenTheTemplateContentIsNotParseableWhileSendingViaTheMailChannel(): void
     {
-        ConfigFacade::enableSendingViaMailChannel();
+        $this->enableSendingViaMailChannel();
         $validatedTemplateMessage = TemplatesApi::respondWithNonParseableTemplateContent();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
@@ -216,7 +215,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
      */
     public function itFailsWhenTheTemplateMessageIsInvalidWhileSendingViaTheMailChannel(): void
     {
-        ConfigFacade::enableSendingViaMailChannel();
+        $this->enableSendingViaMailChannel();
         $validatedTemplateMessage = TemplatesApi::respondWithInvalidTemplateMessage();
         $notifiable = new MailRoutingNotifiable();
         $notification = new TemplateNotification();
@@ -237,7 +236,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
         TemplateNotification $notification,
         callable $expectMessage
     ): void {
-        ConfigFacade::enableSendingViaMailChannel();
+        $this->enableSendingViaMailChannel();
         $notifiable = new MailRoutingNotifiable();
         $expectedMessage = $expectMessage(
             $notification->toPostmarkTemplate(),

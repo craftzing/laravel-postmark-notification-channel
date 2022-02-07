@@ -8,12 +8,9 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateN
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
-
-use function config;
 
 final class SdkTemplatesApiE2eTest extends IntegrationTestCase
 {
@@ -27,8 +24,7 @@ final class SdkTemplatesApiE2eTest extends IntegrationTestCase
     public function setupTemplatesApi(): void
     {
         $this->afterApplicationCreated(function (): void {
-            config(['postmark-notification-channel.send_via_mail_channel' => true]);
-            Config::dontFake();
+            $this->enableSendingViaMailChannel();
             Postmark::dontFake();
 
             $this->templatesApi = $this->app[SdkTemplatesApi::class];

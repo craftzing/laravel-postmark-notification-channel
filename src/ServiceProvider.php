@@ -15,7 +15,7 @@ final class ServiceProvider extends IlluminateProvider
     {
         $this->mergeConfigFrom(self::CONFIG_PATH, 'postmark-notification-channel');
 
-        $this->app->bind(Config::class, IlluminateConfig::class);
+        $this->app->bind(Config::class, Config::class);
         $this->app->bind(TemplatesApi::class, SdkTemplatesApi::class);
     }
 

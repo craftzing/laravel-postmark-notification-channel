@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Support\Facades\Bus;
@@ -32,7 +31,6 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         Storage::fake();
         Event::fake();
         Mail::fake();
-        Config::fake();
         Postmark::fake();
 
         return parent::setUpTraits();
@@ -48,6 +46,11 @@ abstract class IntegrationTestCase extends OrchestraTestCase
             'mail.from.address' => $this->faker()->email,
             'mail.from.name' => $this->faker()->name,
         ]);
+    }
+
+    protected function enableSendingViaMailChannel(): void
+    {
+        config(['postmark-notification-channel.send_via_mail_channel' => true]);
     }
 
     /**
