@@ -12,6 +12,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateMod
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\MailRoutingNotifiable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\TemplateNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as ConfigFacade;

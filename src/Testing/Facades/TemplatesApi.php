@@ -6,9 +6,9 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
-use Craftzing\Laravel\NotificationChannels\Postmark\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi as TemplatesApiInterface;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateMessage;
 use Illuminate\Support\Facades\Facade;
 

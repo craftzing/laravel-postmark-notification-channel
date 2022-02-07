@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\NotificationChannels\Postmark;
+namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
+use Craftzing\Laravel\NotificationChannels\Postmark\Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Faker\Generator;
 

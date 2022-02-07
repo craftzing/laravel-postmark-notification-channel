@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Config as ConfigInterface;
-use Craftzing\Laravel\NotificationChannels\Postmark\FakeConfig;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeConfig;
 use Illuminate\Support\Facades\Facade;
 use LogicException;
 

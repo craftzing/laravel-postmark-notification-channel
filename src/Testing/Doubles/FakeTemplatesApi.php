@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\NotificationChannels\Postmark;
+namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
+use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateMessage;
 use Exception;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
