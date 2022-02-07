@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\FakeExceptionHandler;
 use Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config;
@@ -31,7 +30,6 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         Storage::fake();
         Event::fake();
         Mail::fake();
-        FakeExceptionHandler::swap($this->app);
         Config::fake();
         Postmark::fake();
 
