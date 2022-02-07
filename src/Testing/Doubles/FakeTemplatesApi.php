@@ -9,7 +9,6 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateN
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesApi;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
 use Craftzing\Laravel\NotificationChannels\Postmark\ValidatedTemplateMessage;
 use Exception;
 use PHPUnit\Framework\Assert;

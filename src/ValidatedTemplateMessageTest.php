@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeTemplatesApi;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\DynamicResponseModel;

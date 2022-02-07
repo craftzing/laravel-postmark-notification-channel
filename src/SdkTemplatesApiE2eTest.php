@@ -8,10 +8,10 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateN
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config as Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 
 use function config;
 

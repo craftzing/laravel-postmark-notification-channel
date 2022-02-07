@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\FakesExceptions;
 use PHPUnit\Framework\Assert;
 use Postmark\Models\DynamicResponseModel;
 use Postmark\Models\PostmarkException;

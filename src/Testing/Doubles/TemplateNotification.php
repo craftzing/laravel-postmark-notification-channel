@@ -7,7 +7,7 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateId;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 use Illuminate\Notifications\Notification;
 
 /**

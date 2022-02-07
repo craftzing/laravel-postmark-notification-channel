@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Resources;
 
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 use PHPUnit\Framework\TestCase;
 
 final class SenderTest extends TestCase

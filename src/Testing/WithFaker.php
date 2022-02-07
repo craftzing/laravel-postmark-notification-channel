@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns;
+namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing;
 
 use Faker\Factory;
 use Faker\Generator;

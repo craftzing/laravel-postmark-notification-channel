@@ -9,7 +9,7 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateIdentifier;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateModel;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\PostmarkAttachment;
 

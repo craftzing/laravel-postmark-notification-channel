@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark\Testing;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider;
-use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Concerns\WithFaker;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Config;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
+use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
