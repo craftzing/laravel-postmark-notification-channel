@@ -58,14 +58,12 @@ final class IsSendableAsPostmarkTemplate extends Constraint
      */
     private function assertInstanceOfNotification($other): void
     {
-        if ($other instanceof Notification) {
-            return;
+        if (! $other instanceof Notification) {
+            $this->fail($other, sprintf(
+                'Only instances of %s can be asserted to be sendable as Postmark Template.',
+                Notification::class,
+            ));
         }
-
-        $this->fail($other, sprintf(
-            'Only instances of %s can be asserted to be sendable as Postmark Template.',
-            Notification::class,
-        ));
     }
 
     /**

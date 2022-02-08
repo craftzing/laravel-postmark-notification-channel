@@ -50,7 +50,8 @@ final class IsSendableAsPostmarkTemplateTest extends TestCase
         yield 'Subject is not an object' => ['not an object'];
         yield 'Subject is not a notification instance' => [new stdClass()];
         yield 'Subject is missing a Postmark TemplateMessage method' => [
-            new class extends Notification {},
+            new class extends Notification {
+            },
         ];
     }
 
