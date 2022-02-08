@@ -2,8 +2,9 @@ Contributing
 ===
 
 Contributions are welcome. If you want to ask or propose something, please 
-[create an issue](https://github.com/craftzing/laravel-postmark-notification-channel/issues/new). If you want to contribute, please 
-send in a pull request.
+[create an issue](https://github.com/craftzing/laravel-postmark-notification-channel/issues/new). 
+If you want to contribute, please send in a 
+[pull request]((https://github.com/craftzing/laravel-postmark-notification-channel/compare) ).
 
 ## ⤴️ Pull requests
 
