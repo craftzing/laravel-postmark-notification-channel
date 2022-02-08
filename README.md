@@ -17,6 +17,7 @@ This package enables you to send notifications using [Postmark Email Templates](
   - [Setting up Postmark](#setting-up-postmark)
 - [Usage](#-usage)
   - [Customizing the Template message](#customizing-the-template-message)
+  - [Available TemplateMessage methods](#available-templatemessage-methods)
   - [Sending Postmark Template notifications via the mail channel](#sending-postmark-template-notifications-via-the-mail-channel)
 - [Changelog](#-changelog)
 - [How to contribute](#-how-to-contribute)
@@ -69,10 +70,8 @@ Add your Postmark Server API Token to the `services.php` config using the accord
 To use this channel for a notification, you should use it in the `via()` method of the notification and add a 
 `toPostmarkTemplate()` which returns `TemplateMessage`:
 ```php
-use \Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
-use \Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplatesChannel;
-use \Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 use Illuminate\Notifications\Notification;
 
 final class WelcomeToCraftzing extends Notification 
@@ -84,24 +83,118 @@ final class WelcomeToCraftzing extends Notification
     
     public function toPostmarkTemplate(): TemplateMessage
     {
-        return (new TemplateMessage(
-            TemplateAlias::fromAlias('welcome-to-craftzing'),
-            DynamicTemplateModel::fromAttributes([
-                'yourTemplateVariable' => 'some value',
-            ]),
-        ));
+        return TemplateMessage::fromAlias('welcome-to-craftzing');
     }
 }
 ```
 
-In order to know which email address the notification should be sent to, the channel will look for an `mail` 
-notification route on the Notifiable model via a `routeNotificationFor($channel = 'mail')` method. This behaviour is
-provided out of the box by Laravel if you use the `Illuminate\Notifications\Notifiable` or 
+In order to know which email address the notification should be sent to, the channel will look for a `mail`notification
+route on the Notifiable model via a `routeNotificationFor($channel = 'mail')` method. This behaviour is provided out of
+the box by Laravel if you use the `Illuminate\Notifications\Notifiable` or 
 `Illuminate\Notifications\RoutesNotifications` traits.
 
 ### Customizing the Template message
 
-Coming soon...
+The easiest way to initialize a `TemplateMessage` is to use the template identifier (either an ID or alias). You can do
+so using either of the following named constructors:
+```php
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+
+TemplateMessage::fromId(943984); 
+TemplateMessage::fromAlias('welcome-to-craftzing'); 
+```
+
+However, most of the time your template will require a number of variables (e.g. the recipient's name, an MFA code or 
+verification link, ...). You can provide such variables by adding a `TemplateModel` to the message:
+```php
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+
+$model = DynamicTemplateModel::fromAttributes([
+    'firstName' => 'Jane',
+    'lastName' => 'Doe',
+    'mfa' => [
+        'code' => 846378,
+        'verificationLink' => 'https://some.verification.link?token=secret'
+    ],
+]);
+
+TemplateMessage::fromAlias('welcome-to-craftzing')
+    ->model($model);
+```
+
+`DynamicTemplateModel` is an implementation of the `TemplateModel` interface we provide out of the box. You can, 
+however, also define your own. The `TemplateMessage` accepts any implementation of the interface. For example:
+```php
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateModel;
+use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+
+final class WelcomeToCraftzingTemplateModel implements TemplateModel
+{
+    private User $user;
+    private MFA $mfa;
+    
+    public function __construct(User $user, MFA $mfa) 
+    {
+        $this->user = $user;
+        $this->mfa = $mfa;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function attributes(): array
+    {
+        return [
+            'firstName' => $this->user->firstName,
+            'lastName' => $this->user->lastName,
+            'mfa' => [
+                'code' => $this->mfa->code(),
+                'verificationLink' => $this->mfa->verificationLink(),
+            ],
+        ];
+    }
+}
+
+TemplateMessage::fromAlias('welcome-to-craftzing')
+    ->model(new WelcomeToCraftzingTemplateModel($user, $mfa));
+```
+
+### Available TemplateMessage methods
+
+Beside the options above, `TemplateMessage` accepts a few other parameters as well. The list below gives you an overview
+of all available methods.
+
+> 💡 `TemplateMessage` is an immutable value object. This means that each time you call a method that modifies the 
+> message, it returns a new instance of it. The original instance will always remain unchanged. 
+
+- `fromAlias(string): TemplateMessage`: A named constructor to initialize a `TemplateMessage` from a template alias.
+- `fromId(int): TemplateMessage`: A named constructor to initialize a `TemplateMessage` from a numeric template ID.
+- `model(TemplateModel): TemplateMessage`: Returns a new message instance with the provided TemplateModel.
+- `from(Sender): TemplateMessage`: Returns a new message instance with the provided `Sender`. When a sender is set 
+  explicitly on the message, the channel will not use the default sender defined in the mail configuration.
+- `to(Recipients): TemplateMessage`: Returns a new message instance with the provided `Recipients`. When recipients are 
+  set explicitly on the message, the channel will not use the provided notifiable.
+- `bcc(Recipients): TemplateMessage`: Returns a new message instance with the provided `Recipients` as bcc.
+- `headers(array): TemplateMessage`: Returns a new message instance with the provided `headers`.
+- `attachments(...PostmarkAttachment): TemplateMessage`: Returns a new message instance with the provided `attachments`.
+- `trackOpens(): TemplateMessage`: Returns a new message instance with the opens tracking option enabled.
+- `dontTrackOpens(): TemplateMessage`: Returns a new message instance with the opens tracking option disabled.
+- `trackLinks(TrackLinks): TemplateMessage`: Returns a new message instance with the provided link tracking strategy. 
+  This method expects an instance of our `Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks` enum:
+  ```php
+  use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
+  use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
+  
+  TemplateMessage::fromAlias('welcome-to-craftzing')
+      ->trackLinks(TrackLinks::HTML_ONLY());
+  ```
+- `trackEverything(): TemplateMessage`: Returns a new message instance with opens tracking enabled and link tracking
+  set to `HTML_AND_TEXT`.
+- `tag(string): TemplateMessage`: Returns a new message instance with the provided tag.
+- `metadata(array): TemplateMessage`: Returns a new message instance with the provided metadata.
+- `messageStreams(...string): TemplateMessage`: Returns a new message instance with the provided message streams.
 
 ### Sending Postmark Template notifications via the mail channel
 
