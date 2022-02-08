@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateIdentifier;
@@ -24,10 +25,7 @@ final class TemplateMessageTest extends TestCase
      */
     public function setupMessage(): void
     {
-        $this->message = new TemplateMessage(
-            $this->createMock(TemplateIdentifier::class),
-            $this->createMock(TemplateModel::class),
-        );
+        $this->message = new TemplateMessage($this->createMock(TemplateIdentifier::class));
     }
 
     /**
@@ -61,6 +59,20 @@ final class TemplateMessageTest extends TestCase
         $this->assertNull($message->tag);
         $this->assertNull($message->metadata);
         $this->assertNull($message->messageStream);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanBeInitialisedWithAModel(): void
+    {
+        $identifier = $this->createMock(TemplateIdentifier::class);
+
+        $message = new TemplateMessage($identifier);
+
+        $this->assertInstanceOf(TemplateMessage::class, $message);
+        $this->assertSame($identifier, $message->identifier);
+        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $message->model);
     }
 
     /**

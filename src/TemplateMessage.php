@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateIdentifier;
@@ -82,10 +83,10 @@ final class TemplateMessage
      */
     public ?array $messageStream = null;
 
-    public function __construct(TemplateIdentifier $identifier, TemplateModel $model)
+    public function __construct(TemplateIdentifier $identifier, ?TemplateModel $model = null)
     {
         $this->identifier = $identifier;
-        $this->model = $model;
+        $this->model = $model ?: DynamicTemplateModel::fromAttributes([]);
     }
 
     private function copy(): self

@@ -24,7 +24,6 @@ final class TemplateNotification extends Notification
         $this->setupFaker();
         $this->message = $message ?: new TemplateMessage(
             TemplateId::fromId($this->faker->randomNumber()),
-            DynamicTemplateModel::fromAttributes([]),
         );
     }
 

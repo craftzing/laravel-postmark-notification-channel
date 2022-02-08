@@ -109,7 +109,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From the default sender to predefined recipients' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome'), DynamicTemplateModel::fromAttributes([])))
+                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
                     ->to(Recipients::fromEmails($this->faker()->email)),
             ),
             fn (TemplateMessage $message, MailRoutingNotifiable $notifiable, Sender $defaultSender) => $message
@@ -118,7 +118,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From a predefined sender to the notifiable' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome'), DynamicTemplateModel::fromAttributes([])))
+                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
                     ->from(Sender::fromEmail($this->faker()->email)),
             ),
             fn (TemplateMessage $message, MailRoutingNotifiable $notifiable, Sender $defaultSender) => $message
@@ -127,7 +127,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From a predefined sender to predefined recipients' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome'), DynamicTemplateModel::fromAttributes([])))
+                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
                     ->from(Sender::fromEmail($this->faker()->email))
                     ->to(Recipients::fromEmails($this->faker()->email)),
             ),

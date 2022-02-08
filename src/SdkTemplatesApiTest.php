@@ -29,10 +29,7 @@ final class SdkTemplatesApiTest extends IntegrationTestCase
     {
         $this->afterApplicationCreated(function (): void {
             $this->templatesApi = $this->app[SdkTemplatesApi::class];
-            $this->message = (new TemplateMessage(
-                TemplateAlias::fromAlias('welcome'),
-                DynamicTemplateModel::fromAttributes(['foo' => 'bar']),
-            ))
+            $this->message = (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
                 ->from(Sender::fromEmail($this->faker()->email))
                 ->to(Recipients::fromEmails($this->faker()->email))
                 ->bcc(Recipients::fromEmails($this->faker()->email))
