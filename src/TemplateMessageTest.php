@@ -8,9 +8,12 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateId;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateIdentifier;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\PostmarkAttachment;
 
@@ -18,37 +21,29 @@ final class TemplateMessageTest extends TestCase
 {
     use WithFaker;
 
-    private TemplateMessage $message;
-
-    /**
-     * @before
-     */
-    public function setupMessage(): void
+    public function namedConstructors(): Generator
     {
-        $this->message = new TemplateMessage($this->createMock(TemplateIdentifier::class));
-    }
+        yield 'fromAlias' => [
+            TemplateMessage::fromAlias($alias = 'some-alias'),
+            TemplateAlias::fromAlias($alias),
+        ];
 
-    /**
-     * @after
-     */
-    public function unsetMessage(): void
-    {
-        unset($this->message);
+        yield 'fromId' => [
+            TemplateMessage::fromId($id = 39479357),
+            TemplateId::fromId($id),
+        ];
     }
 
     /**
      * @test
+     * @dataProvider namedConstructors
      */
-    public function itCanBeInitialisedWithAnyTemplateIdentifierAndModelImplementations(): void
-    {
-        $identifier = $this->createMock(TemplateIdentifier::class);
-        $model = $this->createMock(TemplateModel::class);
-
-        $message = new TemplateMessage($identifier, $model);
-
-        $this->assertInstanceOf(TemplateMessage::class, $message);
-        $this->assertSame($identifier, $message->identifier);
-        $this->assertSame($model, $message->model);
+    public function itCanBeInitialisedFromANamedConstructor(
+        TemplateMessage $message,
+        TemplateIdentifier $expectedIdentifier
+    ): void {
+        $this->assertEquals($expectedIdentifier, $message->identifier);
+        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $message->model);
         $this->assertNull($message->sender);
         $this->assertNull($message->recipients);
         $this->assertNull($message->bcc);
@@ -64,15 +59,15 @@ final class TemplateMessageTest extends TestCase
     /**
      * @test
      */
-    public function itCanBeInitialisedWithAModel(): void
+    public function itAcceptsAnOptionalModel(): void
     {
-        $identifier = $this->createMock(TemplateIdentifier::class);
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
+        $model = $this->createMock(TemplateModel::class);
 
-        $message = new TemplateMessage($identifier);
+        $message = $originalMessage->model($model);
 
-        $this->assertInstanceOf(TemplateMessage::class, $message);
-        $this->assertSame($identifier, $message->identifier);
-        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $message->model);
+        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $originalMessage->model);
+        $this->assertEquals($model, $message->model);
     }
 
     /**
@@ -80,11 +75,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsAnOptionalSender(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $sender = Sender::fromEmail($this->faker->email);
 
-        $message = $this->message->from($sender);
+        $message = $originalMessage->from($sender);
 
-        $this->assertNull($this->message->sender);
+        $this->assertNull($originalMessage->sender);
         $this->assertSame($sender, $message->sender);
     }
 
@@ -93,11 +89,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalRecipients(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $recipients = Recipients::fromEmails($this->faker->email);
 
-        $message = $this->message->to($recipients);
+        $message = $originalMessage->to($recipients);
 
-        $this->assertNull($this->message->recipients);
+        $this->assertNull($originalMessage->recipients);
         $this->assertSame($recipients, $message->recipients);
     }
 
@@ -106,11 +103,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalBcc(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $recipients = Recipients::fromEmails($this->faker->email);
 
-        $message = $this->message->bcc($recipients);
+        $message = $originalMessage->bcc($recipients);
 
-        $this->assertNull($this->message->bcc);
+        $this->assertNull($originalMessage->bcc);
         $this->assertSame($recipients, $message->bcc);
     }
 
@@ -119,11 +117,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalHeaders(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $headers = [$this->faker->word => $this->faker->word];
 
-        $message = $this->message->headers($headers);
+        $message = $originalMessage->headers($headers);
 
-        $this->assertNull($this->message->headers);
+        $this->assertNull($originalMessage->headers);
         $this->assertSame($headers, $message->headers);
     }
 
@@ -132,13 +131,14 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalAttachments(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $attachments = [
             $this->createMock(PostmarkAttachment::class),
         ];
 
-        $message = $this->message->attachments(...$attachments);
+        $message = $originalMessage->attachments(...$attachments);
 
-        $this->assertNull($this->message->attachments);
+        $this->assertNull($originalMessage->attachments);
         $this->assertSame($attachments, $message->attachments);
     }
 
@@ -147,9 +147,11 @@ final class TemplateMessageTest extends TestCase
      */
     public function itCanOptionallyActivateOpensTracking(): void
     {
-        $message = $this->message->trackOpens();
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
 
-        $this->assertNull($this->message->trackOpens);
+        $message = $originalMessage->trackOpens();
+
+        $this->assertNull($originalMessage->trackOpens);
         $this->assertTrue($message->trackOpens);
     }
 
@@ -158,9 +160,11 @@ final class TemplateMessageTest extends TestCase
      */
     public function itCanOptionallyDeactivateOpensTracking(): void
     {
-        $message = $this->message->dontTrackOpens();
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
 
-        $this->assertNull($this->message->trackOpens);
+        $message = $originalMessage->dontTrackOpens();
+
+        $this->assertNull($originalMessage->trackOpens);
         $this->assertFalse($message->trackOpens);
     }
 
@@ -169,11 +173,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsAOptionalTrackLinksConfiguration(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $trackLinks = new TrackLinks($this->faker->randomElement(TrackLinks::toArray()));
 
-        $message = $this->message->trackLinks($trackLinks);
+        $message = $originalMessage->trackLinks($trackLinks);
 
-        $this->assertNull($this->message->trackLinks);
+        $this->assertNull($originalMessage->trackLinks);
         $this->assertSame($trackLinks, $message->trackLinks);
     }
 
@@ -182,9 +187,11 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsAShortcutToTrackEverything(): void
     {
-        $message = $this->message->trackEverything();
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
 
-        $this->assertNull($this->message->trackLinks);
+        $message = $originalMessage->trackEverything();
+
+        $this->assertNull($originalMessage->trackLinks);
         $this->assertTrue($message->trackLinks->equals(TrackLinks::HTML_AND_TEXT()));
     }
 
@@ -193,11 +200,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsAnOptionalTag(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $tag = $this->faker->word;
 
-        $message = $this->message->tag($tag);
+        $message = $originalMessage->tag($tag);
 
-        $this->assertNull($this->message->tag);
+        $this->assertNull($originalMessage->tag);
         $this->assertSame($tag, $message->tag);
     }
 
@@ -206,11 +214,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalMetadata(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $metadata = [$this->faker->word => $this->faker->word];
 
-        $message = $this->message->metadata($metadata);
+        $message = $originalMessage->metadata($metadata);
 
-        $this->assertNull($this->message->metadata);
+        $this->assertNull($originalMessage->metadata);
         $this->assertSame($metadata, $message->metadata);
     }
 
@@ -219,11 +228,12 @@ final class TemplateMessageTest extends TestCase
      */
     public function itAcceptsOptionalMessageStream(): void
     {
+        $originalMessage = TemplateMessage::fromAlias($this->faker->word);
         $messageStream = [$this->faker->word, $this->faker->word];
 
-        $message = $this->message->messageStream(...$messageStream);
+        $message = $originalMessage->messageStream(...$messageStream);
 
-        $this->assertNull($this->message->messageStream);
+        $this->assertNull($originalMessage->messageStream);
         $this->assertSame($messageStream, $message->messageStream);
     }
 }

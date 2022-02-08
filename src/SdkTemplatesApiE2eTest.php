@@ -7,7 +7,6 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotValidateNotification;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
@@ -44,10 +43,8 @@ final class SdkTemplatesApiE2eTest extends IntegrationTestCase
      */
     public function itFailsWhenValidatingATemplateMessageThatDoesNotExist(): void
     {
-        $message = new TemplateMessage(
-            TemplateAlias::fromAlias('nonsense'),
-            DynamicTemplateModel::fromAttributes(['name' => 'foo']),
-        );
+        $message = TemplateMessage::fromAlias('nonsense')
+            ->model(DynamicTemplateModel::fromAttributes(['name' => 'foo']));
 
         $this->expectException(CouldNotValidateNotification::class);
 
@@ -59,35 +56,36 @@ final class SdkTemplatesApiE2eTest extends IntegrationTestCase
      */
     public function itCanValidateTemplateMessages(): void
     {
-        $message = (new TemplateMessage(
-            TemplateAlias::fromAlias('ci-template'),
-            DynamicTemplateModel::fromAttributes([
-                'project' => 'foo',
-                'templateName' => 'bar',
-                'ci' => [
-                    'repo' => 'laravel-postmark-notification-channel',
-                    'build' => '87483743',
-                ],
-                'templateHtmlItems' => [
-                    [
-                        'name' => $this->faker->word,
-                        'url' => $this->faker->url,
+        $message = TemplateMessage::fromAlias('ci-template')
+            ->model(
+                DynamicTemplateModel::fromAttributes([
+                    'project' => 'foo',
+                    'templateName' => 'bar',
+                    'ci' => [
+                        'repo' => 'laravel-postmark-notification-channel',
+                        'build' => '87483743',
                     ],
-                ],
-                'layoutHtmlList' => [
-                    ['name' => $this->faker->word],
-                ],
-                'templateTextList' => [
-                    [
-                        'name' => $this->faker->word,
-                        'url' => $this->faker->url,
+                    'templateHtmlItems' => [
+                        [
+                            'name' => $this->faker->word,
+                            'url' => $this->faker->url,
+                        ],
                     ],
-                ],
-                'layoutTextList' => [
-                    ['name' => $this->faker->word],
-                ],
-            ]),
-        ))->bcc(Recipients::fromEmails('fake@craftzing.com'));
+                    'layoutHtmlList' => [
+                        ['name' => $this->faker->word],
+                    ],
+                    'templateTextList' => [
+                        [
+                            'name' => $this->faker->word,
+                            'url' => $this->faker->url,
+                        ],
+                    ],
+                    'layoutTextList' => [
+                        ['name' => $this->faker->word],
+                    ],
+                ]),
+            )
+            ->bcc(Recipients::fromEmails('fake@craftzing.com'));
 
         $validatedTemplateMessage = $this->templatesApi->validate($message);
 

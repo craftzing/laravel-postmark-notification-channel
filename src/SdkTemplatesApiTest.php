@@ -6,10 +6,8 @@ namespace Craftzing\Laravel\NotificationChannels\Postmark;
 
 use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
 use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotification;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Facades\Postmark;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\IntegrationTestCase;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\WithFaker;
@@ -29,7 +27,7 @@ final class SdkTemplatesApiTest extends IntegrationTestCase
     {
         $this->afterApplicationCreated(function (): void {
             $this->templatesApi = $this->app[SdkTemplatesApi::class];
-            $this->message = (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
+            $this->message = TemplateMessage::fromAlias('welcome')
                 ->from(Sender::fromEmail($this->faker()->email))
                 ->to(Recipients::fromEmails($this->faker()->email))
                 ->bcc(Recipients::fromEmails($this->faker()->email))

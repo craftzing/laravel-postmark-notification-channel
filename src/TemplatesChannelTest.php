@@ -11,7 +11,6 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Exceptions\CouldNotSendNotif
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\FakeTemplatesApi;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\MailRoutingNotifiable;
 use Craftzing\Laravel\NotificationChannels\Postmark\Testing\Doubles\TemplateNotification;
@@ -109,7 +108,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From the default sender to predefined recipients' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
+                TemplateMessage::fromAlias('welcome')
                     ->to(Recipients::fromEmails($this->faker()->email)),
             ),
             fn (TemplateMessage $message, MailRoutingNotifiable $notifiable, Sender $defaultSender) => $message
@@ -118,7 +117,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From a predefined sender to the notifiable' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
+                TemplateMessage::fromAlias('welcome')
                     ->from(Sender::fromEmail($this->faker()->email)),
             ),
             fn (TemplateMessage $message, MailRoutingNotifiable $notifiable, Sender $defaultSender) => $message
@@ -127,7 +126,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'From a predefined sender to predefined recipients' => [
             new TemplateNotification(
-                (new TemplateMessage(TemplateAlias::fromAlias('welcome')))
+                TemplateMessage::fromAlias('welcome')
                     ->from(Sender::fromEmail($this->faker()->email))
                     ->to(Recipients::fromEmails($this->faker()->email)),
             ),
@@ -136,10 +135,8 @@ final class TemplatesChannelTest extends IntegrationTestCase
 
         yield 'With all options' => [
             new TemplateNotification(
-                (new TemplateMessage(
-                    TemplateAlias::fromAlias('welcome'),
-                    DynamicTemplateModel::fromAttributes(['foo' => 'bar']),
-                ))
+                TemplateMessage::fromAlias('welcome')
+                    ->model(DynamicTemplateModel::fromAttributes(['foo' => 'bar']))
                     ->from(Sender::fromEmail($this->faker()->email))
                     ->to(Recipients::fromEmails($this->faker()->email))
                     ->bcc(Recipients::fromEmails($this->faker()->email))

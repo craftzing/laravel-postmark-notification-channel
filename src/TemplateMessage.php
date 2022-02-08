@@ -8,6 +8,8 @@ use Craftzing\Laravel\NotificationChannels\Postmark\Enums\TrackLinks;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Recipients;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\Sender;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateAlias;
+use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateId;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateIdentifier;
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateModel;
 use Postmark\Models\PostmarkAttachment;
@@ -83,10 +85,20 @@ final class TemplateMessage
      */
     public ?array $messageStream = null;
 
-    public function __construct(TemplateIdentifier $identifier, ?TemplateModel $model = null)
+    private function __construct(TemplateIdentifier $identifier, ?TemplateModel $model = null)
     {
         $this->identifier = $identifier;
         $this->model = $model ?: DynamicTemplateModel::fromAttributes([]);
+    }
+
+    public static function fromAlias(string $alias): self
+    {
+        return new self(TemplateAlias::fromAlias($alias));
+    }
+
+    public static function fromId(int $id): self
+    {
+        return new self(TemplateId::fromId($id));
     }
 
     private function copy(): self
@@ -103,6 +115,14 @@ final class TemplateMessage
         $instance->tag = $this->tag;
         $instance->metadata = $this->metadata;
         $instance->messageStream = $this->messageStream;
+
+        return $instance;
+    }
+
+    public function model(TemplateModel $model): self
+    {
+        $instance = $this->copy();
+        $instance->model = $model;
 
         return $instance;
     }
