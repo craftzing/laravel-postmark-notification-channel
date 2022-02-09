@@ -4,7 +4,7 @@
 ![Code style](https://github.com/craftzing/laravel-postmark-notification-channel/workflows/Code%20style/badge.svg)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/b995846d49f313f8b233/test_coverage)](https://codeclimate.com/github/craftzing/laravel-postmark-notification-channel/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b995846d49f313f8b233/maintainability)](https://codeclimate.com/github/craftzing/laravel-postmark-notification-channel/maintainability)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&color=4D6CB8)](https://github.com/craftzing/laravel-postmark-notification-channel/blob/master/LICENSE)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&color=1E114A)](https://github.com/craftzing/laravel-postmark-notification-channel/blob/master/LICENSE)
 
 This package enables you to send notifications using [Postmark Email Templates](https://postmarkapp.com/email-templates).
 
