@@ -16,9 +16,10 @@ This package enables you to send notifications using [Postmark Email Templates](
   - [Setting up a default mail sender](#setting-up-a-default-mail-sender)
   - [Setting up Postmark](#setting-up-postmark)
 - [Usage](#-usage)
-  - [Customizing the Template message](#customizing-the-template-message)
+  - [Working with Template variables](#working-with-template-variables)
   - [Available TemplateMessage methods](#available-templatemessage-methods)
-  - [Sending Postmark Template notifications via the mail channel](#sending-postmark-template-notifications-via-the-mail-channel)
+  - [Using Template notifications locally](#using-template-notifications-locally)
+- [Testing your Template notifications E2E](#-testing-your-template-notifications-e2e)
 - [Changelog](#-changelog)
 - [How to contribute](#-how-to-contribute)
 - [Thanks to...](#-thanks-to)
@@ -46,7 +47,7 @@ register the service provider, so you don't have to register it yourself.
 ### Setting up a default mail sender
 
 Fill out the following in your `mail.php` config file or the according environment variables:
-```
+```php
 // config/mail.php
 'from' => [
     'address' => env('MAIL_FROM_ADDRESS', 'hello@your.domain'),
@@ -57,7 +58,7 @@ Fill out the following in your `mail.php` config file or the according environme
 ### Setting up Postmark
 
 Add your Postmark Server API Token to the `services.php` config using the according environment variable:
-```
+```php
 // config/services.php
 'postmark' => [
     'token' => env('POSTMARK_TOKEN'),
@@ -93,7 +94,7 @@ route on the Notifiable model via a `routeNotificationFor($channel = 'mail')` me
 the box by Laravel if you use the `Illuminate\Notifications\Notifiable` or 
 `Illuminate\Notifications\RoutesNotifications` traits.
 
-### Customizing the Template message
+### Working with Template variables
 
 The easiest way to initialize a `TemplateMessage` is to use the template identifier (either an ID or alias). You can do
 so using either of the following named constructors:
@@ -124,42 +125,7 @@ TemplateMessage::fromAlias('welcome-to-craftzing')
 ```
 
 `DynamicTemplateModel` is an implementation of the `TemplateModel` interface we provide out of the box. You can, 
-however, also define your own. The `TemplateMessage` accepts any implementation of the interface. For example:
-```php
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
-use Craftzing\Laravel\NotificationChannels\Postmark\Resources\TemplateModel;
-use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
-
-final class WelcomeToCraftzingTemplateModel implements TemplateModel
-{
-    private User $user;
-    private MFA $mfa;
-    
-    public function __construct(User $user, MFA $mfa) 
-    {
-        $this->user = $user;
-        $this->mfa = $mfa;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function attributes(): array
-    {
-        return [
-            'firstName' => $this->user->firstName,
-            'lastName' => $this->user->lastName,
-            'mfa' => [
-                'code' => $this->mfa->code(),
-                'verificationLink' => $this->mfa->verificationLink(),
-            ],
-        ];
-    }
-}
-
-TemplateMessage::fromAlias('welcome-to-craftzing')
-    ->model(new WelcomeToCraftzingTemplateModel($user, $mfa));
-```
+however, also define your own. The `TemplateMessage` accepts any implementation of the interface.
 
 ### Available TemplateMessage methods
 
@@ -196,7 +162,39 @@ of all available methods.
 - `metadata(array): TemplateMessage`: Returns a new message instance with the provided metadata.
 - `messageStreams(...string): TemplateMessage`: Returns a new message instance with the provided message streams.
 
-### Sending Postmark Template notifications via the mail channel
+### Using Template notifications locally
+
+When running your application in a local environment (or any non-production environment for that matter), you may not
+want Postmark Template notification to be actually sent out (the same way you may not want email notification to be 
+sent). Laravel provides several ways to 
+["disable" the actual sending of emails](https://laravel.com/docs/9.x/mail#mail-and-local-development) during local 
+development.
+
+This notification channel allows you to send Postmark Template notifications via the `mail` notification which Laravel 
+provides out of the box. That way, you can still use the actual Postmark Template locally, but it will be handled by the 
+Laravel mailer instead of the Postmark API.
+
+Let's consider the following scenario: you've configured your local environment to handle emails with 
+[MailHog](https://github.com/mailhog/MailHog). If you want your Postmark Template notifications to be handled by 
+MailHog as well, you can either enable the following option in the `postmark-notification-channel.php` config:
+```php
+// config/postmark-notification-channel.php
+'send_via_mail_channel' => true,
+```
+
+or set the according environment variable if you didn't publish the package config:
+```dotenv
+POSTMARK_NOTIFICATION_CHANNEL_SEND_VIA_MAIL_CHANNEL=true
+```
+
+Under the hood, when sending a Postmark Template notification, the channel will first fetch the template from Postmark,
+render it with the provided variables and then pass along the rendered HTML to the Laravel mailer.
+
+> 💡 Because were actually calling the Postmark API to fetch the Email Template, you will need the Postmark API token 
+> to be set for this configuration to work.
+
+
+## 🧪 Testing your template notifications E2E
 
 Coming soon...
 
