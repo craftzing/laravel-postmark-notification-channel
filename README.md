@@ -41,8 +41,13 @@ You can install this package using [Composer](https://getcomposer.org) by runnin
 composer require craftzing/laravel-postmark-notification-channel
 ```
 
-We're using [Laravel's package discovery](https://laravel.com/docs/8.x/packages#package-discovery) to automatically
+We're using [Laravel's package discovery](https://laravel.com/docs/9.x/packages#package-discovery) to automatically
 register the service provider, so you don't have to register it yourself.
+
+You can also optionally publish the package config file by running the command below:
+```bash
+php artisan vendor:publish --provider="Craftzing\Laravel\NotificationChannels\Postmark\ServiceProvider" --tag="config"
+```
 
 ### Setting up a default mail sender
 
@@ -170,9 +175,9 @@ sent). Laravel provides several ways to
 ["disable" the actual sending of emails](https://laravel.com/docs/9.x/mail#mail-and-local-development) during local 
 development.
 
-This notification channel allows you to send Postmark Template notifications via the `mail` notification which Laravel 
-provides out of the box. That way, you can still use the actual Postmark Template locally, but it will be handled by the 
-Laravel mailer instead of the Postmark API.
+This notification channel allows you to send Postmark Template notifications via the `mail` notification channel which
+Laravel provides out of the box. That way, you can still use the actual Postmark Template locally, but it will be 
+handled by the Laravel mailer instead of the Postmark API.
 
 Let's consider the following scenario: you've configured your local environment to handle emails with 
 [MailHog](https://github.com/mailhog/MailHog). If you want your Postmark Template notifications to be handled by 
