@@ -37,7 +37,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         $this->setupFaker();
 
         yield 'Fully filled out template model' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => $this->faker->name,
                 'user' => [
                     'email' => $this->faker->email,
@@ -57,7 +57,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ];
 
         yield 'Template model with empty lists' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => $this->faker->name,
                 'user' => [
                     'email' => $this->faker->email,
@@ -93,13 +93,13 @@ final class ValidatedTemplateMessageTest extends TestCase
         $this->setupFaker();
 
         yield 'Template model is empty' => [
-            DynamicTemplateModel::fromAttributes([]),
+            DynamicTemplateModel::fromVariables([]),
             self::SUGGESTED_MODEL,
             [],
         ];
 
         yield 'Template model is missing nested attributes' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => self::SUGGESTED_MODEL['project'],
                 'user' => [],
                 'list' => [
@@ -114,7 +114,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ];
 
         yield 'Template model is partially missing nested attributes' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => self::SUGGESTED_MODEL['project'],
                 'user' => [
                     'email' => $this->faker->email,
@@ -131,7 +131,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ];
 
         yield 'Template model contains list items with missing attributes' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => $this->faker->word,
                 'user' => [
                     'email' => $this->faker->email,
@@ -164,7 +164,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ];
 
         yield 'Template model contains attributes with an invalid type' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => [
                     'name' => $this->faker->word,
                 ],
@@ -178,7 +178,7 @@ final class ValidatedTemplateMessageTest extends TestCase
         ];
 
         yield 'Template model contains nested attributes with an invalid type' => [
-            DynamicTemplateModel::fromAttributes([
+            DynamicTemplateModel::fromVariables([
                 'project' => $this->faker->word,
                 'user' => [
                     'email' => $this->faker->email,
@@ -235,7 +235,7 @@ final class ValidatedTemplateMessageTest extends TestCase
             new DynamicResponseModel([
                 'AllContentIsValid' => $isContentParseable,
             ] + FakeTemplatesApi::RENDERED_TEMPLATE),
-            DynamicTemplateModel::fromAttributes([]),
+            DynamicTemplateModel::fromVariables([]),
             new DynamicResponseModel(self::SUGGESTED_MODEL),
         );
 

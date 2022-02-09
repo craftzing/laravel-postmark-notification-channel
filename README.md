@@ -111,7 +111,7 @@ verification link, ...). You can provide such variables by adding a `TemplateMod
 use Craftzing\Laravel\NotificationChannels\Postmark\Resources\DynamicTemplateModel;
 use Craftzing\Laravel\NotificationChannels\Postmark\TemplateMessage;
 
-$model = DynamicTemplateModel::fromAttributes([
+$model = DynamicTemplateModel::fromVariables([
     'firstName' => 'Jane',
     'lastName' => 'Doe',
     'mfa' => [

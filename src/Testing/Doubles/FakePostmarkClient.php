@@ -78,7 +78,7 @@ final class FakePostmarkClient extends PostmarkClient
         Assert::assertSame($this->emailSentWithTemplate['from'], $message->sender->toString());
         Assert::assertSame($this->emailSentWithTemplate['to'], $message->recipients->toString());
         Assert::assertSame($this->emailSentWithTemplate['templateIdOrAlias'], $message->identifier->get());
-        Assert::assertSame($this->emailSentWithTemplate['templateModel'], $message->model->attributes());
+        Assert::assertSame($this->emailSentWithTemplate['templateModel'], $message->model->variables());
         Assert::assertSame($this->emailSentWithTemplate['inlineCss'], $message->inlineCss);
         Assert::assertSame($this->emailSentWithTemplate['tag'], $message->tag);
         Assert::assertSame($this->emailSentWithTemplate['trackOpens'], $message->trackOpens);

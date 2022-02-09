@@ -9,34 +9,34 @@ final class DynamicTemplateModel implements TemplateModel
     /**
      * @var array<string|mixed>
      */
-    private array $attributes;
+    private array $variables;
 
     /**
      * @param array<string|mixed> $attributes
      */
     private function __construct(array $attributes)
     {
-        $this->attributes = $attributes;
+        $this->variables = $attributes;
     }
 
     /**
-     * @param array<string|mixed> $attributes
+     * @param array<string|mixed> $variables
      */
-    public static function fromAttributes(array $attributes): self
+    public static function fromVariables(array $variables): self
     {
-        return new self($attributes);
+        return new self($variables);
     }
 
-    public function set(string $attribute, string $value): self
+    public function set(string $variable, string $value): self
     {
-        return new self([$attribute => $value] + $this->attributes);
+        return new self([$variable => $value] + $this->variables);
     }
 
     /**
      * @return array<string|mixed>
      */
-    public function attributes(): array
+    public function variables(): array
     {
-        return $this->attributes;
+        return $this->variables;
     }
 }

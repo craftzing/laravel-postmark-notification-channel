@@ -26,7 +26,7 @@ final class SdkTemplatesApi implements TemplatesApi
                 $message->sender->toString(),
                 $message->recipients->toString(),
                 $message->identifier->get(),
-                $message->model->attributes(),
+                $message->model->variables(),
                 $message->inlineCss,
                 $message->tag,
                 $message->trackOpens,
@@ -53,7 +53,7 @@ final class SdkTemplatesApi implements TemplatesApi
 
             // Next, we should pass the retrieved template along with the provided Template model to the
             // validation endpoint in order to get the template back with the provided model filled in...
-            $response = $this->validateTemplate($template, $message->model->attributes(), $message->inlineCss);
+            $response = $this->validateTemplate($template, $message->model->variables(), $message->inlineCss);
 
             // The endpoint handles a very loose validation policy. For any missing variables or attributes, it injects
             // a suggested Template model. And if you provide an empty array for a variable that requires attributes,

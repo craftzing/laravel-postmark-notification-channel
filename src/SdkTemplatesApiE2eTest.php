@@ -44,7 +44,7 @@ final class SdkTemplatesApiE2eTest extends IntegrationTestCase
     public function itFailsWhenValidatingATemplateMessageThatDoesNotExist(): void
     {
         $message = TemplateMessage::fromAlias('nonsense')
-            ->model(DynamicTemplateModel::fromAttributes(['name' => 'foo']));
+            ->model(DynamicTemplateModel::fromVariables(['name' => 'foo']));
 
         $this->expectException(CouldNotValidateNotification::class);
 
@@ -58,7 +58,7 @@ final class SdkTemplatesApiE2eTest extends IntegrationTestCase
     {
         $message = TemplateMessage::fromAlias('ci-template')
             ->model(
-                DynamicTemplateModel::fromAttributes([
+                DynamicTemplateModel::fromVariables([
                     'project' => 'foo',
                     'templateName' => 'bar',
                     'ci' => [

@@ -88,7 +88,7 @@ final class TemplateMessage
     private function __construct(TemplateIdentifier $identifier, ?TemplateModel $model = null)
     {
         $this->identifier = $identifier;
-        $this->model = $model ?: DynamicTemplateModel::fromAttributes([]);
+        $this->model = $model ?: DynamicTemplateModel::fromVariables([]);
     }
 
     public static function fromAlias(string $alias): self

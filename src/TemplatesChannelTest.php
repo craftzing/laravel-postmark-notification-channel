@@ -136,7 +136,7 @@ final class TemplatesChannelTest extends IntegrationTestCase
         yield 'With all options' => [
             new TemplateNotification(
                 TemplateMessage::fromAlias('welcome')
-                    ->model(DynamicTemplateModel::fromAttributes(['foo' => 'bar']))
+                    ->model(DynamicTemplateModel::fromVariables(['foo' => 'bar']))
                     ->from(Sender::fromEmail($this->faker()->email))
                     ->to(Recipients::fromEmails($this->faker()->email))
                     ->bcc(Recipients::fromEmails($this->faker()->email))

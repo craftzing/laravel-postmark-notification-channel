@@ -9,5 +9,5 @@ interface TemplateModel
     /**
      * @return array<string|mixed>
      */
-    public function attributes(): array;
+    public function variables(): array;
 }

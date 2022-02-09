@@ -67,7 +67,7 @@ final class ValidatedTemplateMessage
         // Because of the intricacies of the DynamicResponseModel implementation, we should
         // ensure to compare the actual model to the suggested model after converting it
         // to a DynamicResponseModel. This way, both result sets work identically.
-        return new self($renderedTemplate, new DynamicResponseModel($model->attributes()), $suggestedModel);
+        return new self($renderedTemplate, new DynamicResponseModel($model->variables()), $suggestedModel);
     }
 
     private function parseForValidationErrors(DynamicResponseModel $model, DynamicResponseModel $suggestedModel): void

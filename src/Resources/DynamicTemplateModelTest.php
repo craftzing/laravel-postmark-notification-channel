@@ -13,7 +13,7 @@ final class DynamicTemplateModelTest extends TestCase
      */
     public function itImplementsTheTemplateModelInterface(): void
     {
-        $resource = DynamicTemplateModel::fromAttributes([]);
+        $resource = DynamicTemplateModel::fromVariables([]);
 
         $this->assertInstanceOf(TemplateModel::class, $resource);
     }
@@ -21,38 +21,38 @@ final class DynamicTemplateModelTest extends TestCase
     /**
      * @test
      */
-    public function itCanReturnItsAttributes(): void
+    public function itCanReturnItsVariables(): void
     {
         $attributes = ['key' => 'some-value'];
-        $resource = DynamicTemplateModel::fromAttributes($attributes);
+        $resource = DynamicTemplateModel::fromVariables($attributes);
 
-        $this->assertSame($attributes, $resource->attributes());
+        $this->assertSame($attributes, $resource->variables());
     }
 
     /**
      * @test
      */
-    public function itCanSetAttributesAfterInitialisation(): void
+    public function itCanSetVariablesAfterInitialisation(): void
     {
-        $immutableResource = DynamicTemplateModel::fromAttributes([]);
+        $immutableResource = DynamicTemplateModel::fromVariables([]);
 
         $resource = $immutableResource->set('foo', 'bar');
 
-        $this->assertSame([], $immutableResource->attributes());
-        $this->assertSame(['foo' => 'bar'], $resource->attributes());
+        $this->assertSame([], $immutableResource->variables());
+        $this->assertSame(['foo' => 'bar'], $resource->variables());
     }
 
     /**
      * @test
      */
-    public function itCanOverwriteAttributesAfterInitialisation(): void
+    public function itCanOverwriteVariablesAfterInitialisation(): void
     {
         $attributes = ['foo' => 'bar'];
-        $immutableResource = DynamicTemplateModel::fromAttributes($attributes);
+        $immutableResource = DynamicTemplateModel::fromVariables($attributes);
 
         $resource = $immutableResource->set('foo', 'baz');
 
-        $this->assertSame($attributes, $immutableResource->attributes());
-        $this->assertSame(['foo' => 'baz'], $resource->attributes());
+        $this->assertSame($attributes, $immutableResource->variables());
+        $this->assertSame(['foo' => 'baz'], $resource->variables());
     }
 }

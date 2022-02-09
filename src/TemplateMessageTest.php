@@ -43,7 +43,7 @@ final class TemplateMessageTest extends TestCase
         TemplateIdentifier $expectedIdentifier
     ): void {
         $this->assertEquals($expectedIdentifier, $message->identifier);
-        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $message->model);
+        $this->assertEquals(DynamicTemplateModel::fromVariables([]), $message->model);
         $this->assertNull($message->sender);
         $this->assertNull($message->recipients);
         $this->assertNull($message->bcc);
@@ -66,7 +66,7 @@ final class TemplateMessageTest extends TestCase
 
         $message = $originalMessage->model($model);
 
-        $this->assertEquals(DynamicTemplateModel::fromAttributes([]), $originalMessage->model);
+        $this->assertEquals(DynamicTemplateModel::fromVariables([]), $originalMessage->model);
         $this->assertEquals($model, $message->model);
     }
 

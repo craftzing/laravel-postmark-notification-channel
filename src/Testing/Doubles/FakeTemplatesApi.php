@@ -73,7 +73,7 @@ final class FakeTemplatesApi implements TemplatesApi
 
         return $this->validatedTemplateMessage ?: ValidatedTemplateMessage::validate(
             new DynamicResponseModel(self::RENDERED_TEMPLATE),
-            DynamicTemplateModel::fromAttributes(['foo' => 'bar']),
+            DynamicTemplateModel::fromVariables(['foo' => 'bar']),
             new DynamicResponseModel(['foo' => 'foo_Value']),
         );
     }
@@ -97,7 +97,7 @@ final class FakeTemplatesApi implements TemplatesApi
     {
         return $this->validatedTemplateMessage = ValidatedTemplateMessage::validate(
             new DynamicResponseModel(['AllContentIsValid' => false] + FakeTemplatesApi::RENDERED_TEMPLATE),
-            DynamicTemplateModel::fromAttributes([]),
+            DynamicTemplateModel::fromVariables([]),
             new DynamicResponseModel(['foo' => 'foo_Value']),
         );
     }
@@ -106,7 +106,7 @@ final class FakeTemplatesApi implements TemplatesApi
     {
         return $this->validatedTemplateMessage = ValidatedTemplateMessage::validate(
             new DynamicResponseModel(FakeTemplatesApi::RENDERED_TEMPLATE),
-            DynamicTemplateModel::fromAttributes([]),
+            DynamicTemplateModel::fromVariables([]),
             new DynamicResponseModel(['foo' => 'foo_Value']),
         );
     }
