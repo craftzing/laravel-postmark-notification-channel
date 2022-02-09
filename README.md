@@ -30,7 +30,7 @@ This package enables you to send notifications using [Postmark Email Templates](
 
 This package requires:
 - [PHP](https://www.php.net/supported-versions.php) 7.4 or 8
-- [Laravel](https://laravel.com) 7 or 8
+- [Laravel](https://laravel.com) 7, 8 or 9
 - A [Postmark Server API Token](https://postmarkapp.com/support/article/1008-what-are-the-account-and-server-api-tokens)
 
 
