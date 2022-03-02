@@ -20,4 +20,9 @@ final class RenderedEmailTemplateMail extends Mailable
     {
         return $this;
     }
+
+    public function htmlBody(): string
+    {
+        return $this->html;
+    }
 }
