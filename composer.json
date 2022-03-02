@@ -48,7 +48,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Craftzing\\Laravel\\NotificationChannels\\NotificationChannels\\ServiceProvider"
+                "Craftzing\\Laravel\\NotificationChannels\\Postmark\\ServiceProvider"
             ]
         }
     }
