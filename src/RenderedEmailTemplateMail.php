@@ -16,8 +16,8 @@ final class RenderedEmailTemplateMail extends Mailable
             ->text($text);
     }
 
-//    public function build(): self
-//    {
-//        return $this;
-//    }
+    public function build(): self
+    {
+        return $this;
+    }
 }
