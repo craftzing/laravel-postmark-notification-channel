@@ -11,8 +11,6 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\DynamicResponseModel;
 
-use function optional;
-
 final class ValidatedTemplateMessageTest extends TestCase
 {
     use WithFaker;
@@ -103,21 +101,21 @@ final class ValidatedTemplateMessageTest extends TestCase
                 ],
                 'TextBody' => null,
             ]),
-            compact('subject', 'htmlBody') + ['textBody' => '']
+            compact('subject', 'htmlBody') + ['textBody' => ''],
         ];
 
         yield 'Response model with empty html' => [
             new DynamicResponseModel([
                 'AllContentIsValid' => true,
                 'Subject' => [
-                    'RenderedContent' => $subject ='Some rendered subject',
+                    'RenderedContent' => $subject = 'Some rendered subject',
                 ],
                 'HtmlBody' => null,
                 'TextBody' => [
                     'RenderedContent' => $textBody = 'Some rendered text',
                 ],
             ]),
-            compact('subject', 'textBody') + ['htmlBody' => '']
+            compact('subject', 'textBody') + ['htmlBody' => ''],
         ];
 
         yield 'Response model with empty html and text' => [
@@ -129,7 +127,7 @@ final class ValidatedTemplateMessageTest extends TestCase
                 'HtmlBody' => null,
                 'TextBody' => null,
             ]),
-            compact('subject') + ['htmlBody' => '', 'textBody' => '']
+            compact('subject') + ['htmlBody' => '', 'textBody' => ''],
         ];
     }
 
