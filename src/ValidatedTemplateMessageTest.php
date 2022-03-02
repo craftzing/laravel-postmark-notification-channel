@@ -11,6 +11,8 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use Postmark\Models\DynamicResponseModel;
 
+use function optional;
+
 final class ValidatedTemplateMessageTest extends TestCase
 {
     use WithFaker;
@@ -86,6 +88,72 @@ final class ValidatedTemplateMessageTest extends TestCase
         $this->assertEmpty($validatedMessage->missingVariables);
         $this->assertEmpty($validatedMessage->invalidVariables);
         $this->assertFalse($validatedMessage->isInvalid());
+    }
+
+    public function emptyBodyModels(): Generator
+    {
+        yield 'Response model with empty text' => [
+            new DynamicResponseModel([
+                'AllContentIsValid' => true,
+                'Subject' => [
+                    'RenderedContent' => 'Some rendered subject',
+                ],
+                'HtmlBody' => [
+                    'RenderedContent' => 'Some rendered HTML',
+                ],
+                'TextBody' => null,
+            ]),
+        ];
+
+        yield 'Response model with empty html' => [
+            new DynamicResponseModel([
+                'AllContentIsValid' => true,
+                'Subject' => [
+                    'RenderedContent' => 'Some rendered subject',
+                ],
+                'HtmlBody' => null,
+                'TextBody' => [
+                    'RenderedContent' => 'Some rendered text',
+                ],
+            ]),
+        ];
+
+        yield 'Response model with empty html and text' => [
+            new DynamicResponseModel([
+                'AllContentIsValid' => true,
+                'Subject' => [
+                    'RenderedContent' => 'Some rendered subject',
+                ],
+                'HtmlBody' => null,
+                'TextBody' => null,
+            ]),
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider emptyBodyModels
+     */
+    public function itCanHandleEmptyBodyValues(DynamicResponseModel $renderedTemplate): void
+    {
+        $this->setupFaker();
+        $templateModel = DynamicTemplateModel::fromVariables([
+            'project' => $this->faker->name,
+            'user' => [
+                'email' => $this->faker->email,
+                'name' => $this->faker->firstName,
+                'preferences' => [],
+            ],
+            'list' => [],
+        ]);
+        $suggestedModel = new DynamicResponseModel(self::SUGGESTED_MODEL);
+
+        $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
+
+        $this->assertInstanceOf(ValidatedTemplateMessage::class, $validatedMessage);
+        $this->assertSame($renderedTemplate['Subject']['RenderedContent'], $validatedMessage->subject);
+        $this->assertSame((string) optional($renderedTemplate['HtmlBody'])['RenderedContent'], $validatedMessage->htmlBody);
+        $this->assertSame((string) optional($renderedTemplate['TextBody'])['RenderedContent'], $validatedMessage->textBody);
     }
 
     public function invalidTemplateModels(): Generator

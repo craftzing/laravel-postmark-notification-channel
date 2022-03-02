@@ -14,6 +14,7 @@ use function count;
 use function gettype;
 use function head;
 use function is_array;
+use function optional;
 
 final class ValidatedTemplateMessage
 {
@@ -52,8 +53,8 @@ final class ValidatedTemplateMessage
         DynamicResponseModel $suggestedModel
     ) {
         $this->subject = (string) $renderedTemplate['Subject']['RenderedContent'];
-        $this->htmlBody = (string) $renderedTemplate['HtmlBody']['RenderedContent'];
-        $this->textBody = (string) $renderedTemplate['TextBody']['RenderedContent'];
+        $this->htmlBody = (string) optional($renderedTemplate['HtmlBody'])['RenderedContent'];
+        $this->textBody = (string) optional($renderedTemplate['TextBody'])['RenderedContent'];
         $this->renderedTemplate = $renderedTemplate;
 
         $this->parseForValidationErrors($model, $suggestedModel);
