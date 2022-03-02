@@ -271,32 +271,4 @@ final class TemplatesChannelTest extends IntegrationTestCase
             return true;
         });
     }
-
-    /**
-     * @test
-     * @dataProvider templateMessages
-     * @param callable(TemplateMessage, MailRoutingNotifiable, Sender): TemplateMessage $expectMessage
-     */
-    public function itCanBuildTheTemplateMessagesViaTheMailChannel(
-        TemplateNotification $notification,
-        callable $expectMessage
-    ): void {
-        $this->enableSendingViaMailChannel();
-        $notifiable = new MailRoutingNotifiable();
-        $expectedMessage = $expectMessage(
-            $notification->toPostmarkTemplate(),
-            $notifiable,
-            $this->config->defaultSender(),
-        );
-
-        $this->channel->send($notifiable, $notification);
-
-        TemplatesApi::assertValidated($expectedMessage);
-        TemplatesApi::assertNothingSent();
-        Mail::assertSent(RenderedEmailTemplateMail::class, function (RenderedEmailTemplateMail $mail): bool {
-            $this->assertInstanceOf(RenderedEmailTemplateMail::class, $mail->build());
-
-            return true;
-        });
-    }
 }
