@@ -96,37 +96,40 @@ final class ValidatedTemplateMessageTest extends TestCase
             new DynamicResponseModel([
                 'AllContentIsValid' => true,
                 'Subject' => [
-                    'RenderedContent' => 'Some rendered subject',
+                    'RenderedContent' => $subject = 'Some rendered subject',
                 ],
                 'HtmlBody' => [
-                    'RenderedContent' => 'Some rendered HTML',
+                    'RenderedContent' => $htmlBody = 'Some rendered HTML',
                 ],
                 'TextBody' => null,
             ]),
+            compact('subject', 'htmlBody') + ['textBody' => '']
         ];
 
         yield 'Response model with empty html' => [
             new DynamicResponseModel([
                 'AllContentIsValid' => true,
                 'Subject' => [
-                    'RenderedContent' => 'Some rendered subject',
+                    'RenderedContent' => $subject ='Some rendered subject',
                 ],
                 'HtmlBody' => null,
                 'TextBody' => [
-                    'RenderedContent' => 'Some rendered text',
+                    'RenderedContent' => $textBody = 'Some rendered text',
                 ],
             ]),
+            compact('subject', 'textBody') + ['htmlBody' => '']
         ];
 
         yield 'Response model with empty html and text' => [
             new DynamicResponseModel([
                 'AllContentIsValid' => true,
                 'Subject' => [
-                    'RenderedContent' => 'Some rendered subject',
+                    'RenderedContent' => $subject = 'Some rendered subject',
                 ],
                 'HtmlBody' => null,
                 'TextBody' => null,
             ]),
+            compact('subject') + ['htmlBody' => '', 'textBody' => '']
         ];
     }
 
@@ -134,7 +137,7 @@ final class ValidatedTemplateMessageTest extends TestCase
      * @test
      * @dataProvider emptyBodyModels
      */
-    public function itCanHandleEmptyBodyValues(DynamicResponseModel $renderedTemplate): void
+    public function itCanHandleEmptyBodyValues(DynamicResponseModel $renderedTemplate, array $expectations): void
     {
         $this->setupFaker();
         $templateModel = DynamicTemplateModel::fromVariables([
@@ -150,9 +153,9 @@ final class ValidatedTemplateMessageTest extends TestCase
 
         $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
 
-        $this->assertSame($renderedTemplate['Subject']['RenderedContent'], $validatedMessage->subject);
-        $this->assertSame((string) optional($renderedTemplate['HtmlBody'])['RenderedContent'], $validatedMessage->htmlBody);
-        $this->assertSame((string) optional($renderedTemplate['TextBody'])['RenderedContent'], $validatedMessage->textBody);
+        $this->assertSame($expectations['subject'], $validatedMessage->subject);
+        $this->assertSame($expectations['htmlBody'], $validatedMessage->htmlBody);
+        $this->assertSame($expectations['textBody'], $validatedMessage->textBody);
         $this->assertEmpty($validatedMessage->missingVariables);
         $this->assertEmpty($validatedMessage->invalidVariables);
         $this->assertFalse($validatedMessage->isInvalid());
