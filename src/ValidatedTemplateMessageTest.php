@@ -150,10 +150,12 @@ final class ValidatedTemplateMessageTest extends TestCase
 
         $validatedMessage = ValidatedTemplateMessage::validate($renderedTemplate, $templateModel, $suggestedModel);
 
-        $this->assertInstanceOf(ValidatedTemplateMessage::class, $validatedMessage);
         $this->assertSame($renderedTemplate['Subject']['RenderedContent'], $validatedMessage->subject);
         $this->assertSame((string) optional($renderedTemplate['HtmlBody'])['RenderedContent'], $validatedMessage->htmlBody);
         $this->assertSame((string) optional($renderedTemplate['TextBody'])['RenderedContent'], $validatedMessage->textBody);
+        $this->assertEmpty($validatedMessage->missingVariables);
+        $this->assertEmpty($validatedMessage->invalidVariables);
+        $this->assertFalse($validatedMessage->isInvalid());
     }
 
     public function invalidTemplateModels(): Generator
