@@ -229,9 +229,9 @@ final class TemplateMessageTest extends TestCase
     public function itAcceptsOptionalMessageStream(): void
     {
         $originalMessage = TemplateMessage::fromAlias($this->faker->word);
-        $messageStream = [$this->faker->word, $this->faker->word];
+        $messageStream = $this->faker->word;
 
-        $message = $originalMessage->messageStream(...$messageStream);
+        $message = $originalMessage->messageStream($messageStream);
 
         $this->assertNull($originalMessage->messageStream);
         $this->assertSame($messageStream, $message->messageStream);
