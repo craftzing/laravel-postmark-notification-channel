@@ -80,10 +80,9 @@ final class TemplateMessage
     public ?array $metadata = null;
 
     /**
-     * @var string[]
      * @readonly
      */
-    public ?array $messageStream = null;
+    public ?string $messageStream = null;
 
     private function __construct(TemplateIdentifier $identifier, ?TemplateModel $model = null)
     {
@@ -220,7 +219,7 @@ final class TemplateMessage
         return $instance;
     }
 
-    public function messageStream(string ...$messageStream): self
+    public function messageStream(string $messageStream): self
     {
         $instance = $this->copy();
         $instance->messageStream = $messageStream;
