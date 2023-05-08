@@ -56,7 +56,7 @@ jobs:
         run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
 
       - name: "Run tests & publish code coverage"
-        uses: paambaati/codeclimate-action@v2.7.5
+        uses: paambaati/codeclimate-action@v4.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
         with:
