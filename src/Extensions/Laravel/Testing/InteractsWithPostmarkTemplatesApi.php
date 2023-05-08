@@ -11,6 +11,6 @@ trait InteractsWithPostmarkTemplatesApi
 {
     private function assertNotificationIsSendableAsPostmarkTemplate(Notification $notification): void
     {
-        $this->assertThat($notification, $this->app[IsSendableAsPostmarkTemplate::class]);
+        $this->assertThatPostmark($notification, $this->app[IsSendableAsPostmarkTemplate::class]);
     }
 }

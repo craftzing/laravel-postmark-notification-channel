@@ -20,7 +20,7 @@ final class InteractsWithPostmarkTemplatesApiTest extends IntegrationTestCase
     /**
      * {@inheritdoc}
      */
-    public static function assertThat($value, Constraint $constraint, string $message = ''): void
+    public static function assertThatPostmark($value, Constraint $constraint, string $message = ''): void
     {
         // Note that should overwrite this method in order to spy on the parameters it receives when calling
         // the `assertNotificationIsSendableAsPostmarkTemplate()` method of the trait we're testing...

@@ -26,6 +26,7 @@ final class IsSendableAsPostmarkTemplate extends Constraint
 
     /**
      * {@inheritdoc}
+     * @param mixed $other
      */
     public function matches($other): bool
     {
@@ -83,6 +84,7 @@ final class IsSendableAsPostmarkTemplate extends Constraint
 
     /**
      * {@inheritdoc}
+     * @param mixed $other
      */
     protected function failureDescription($other): string
     {

@@ -73,7 +73,11 @@ final class SdkTemplatesApi implements TemplatesApi
     }
 
     /**
+     * @param DynamicResponseModel<mixed> $template
      * @param array<mixed> $model
+     * @param bool $inlineCss
+     *
+     * @return DynamicResponseModel<mixed>
      */
     private function validateTemplate(
         DynamicResponseModel $template,
