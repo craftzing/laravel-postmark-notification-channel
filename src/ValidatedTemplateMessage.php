@@ -46,7 +46,7 @@ final class ValidatedTemplateMessage
     public array $invalidVariables = [];
 
     /**
-     * @var DynamicResponseModel<mixed> $renderedTemplate
+     * @var DynamicResponseModel<mixed>
      */
     private DynamicResponseModel $renderedTemplate;
 
