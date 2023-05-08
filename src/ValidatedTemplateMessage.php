@@ -45,8 +45,16 @@ final class ValidatedTemplateMessage
      */
     public array $invalidVariables = [];
 
+    /**
+     * @var DynamicResponseModel<mixed> $renderedTemplate
+     */
     private DynamicResponseModel $renderedTemplate;
 
+    /**
+     * @param DynamicResponseModel<mixed> $renderedTemplate
+     * @param DynamicResponseModel<mixed> $model
+     * @param DynamicResponseModel<mixed> $suggestedModel
+     */
     private function __construct(
         DynamicResponseModel $renderedTemplate,
         DynamicResponseModel $model,
@@ -60,6 +68,13 @@ final class ValidatedTemplateMessage
         $this->parseForValidationErrors($model, $suggestedModel);
     }
 
+    /**
+     * @param DynamicResponseModel<mixed> $renderedTemplate
+     * @param TemplateModel $model
+     * @param DynamicResponseModel<mixed> $suggestedModel
+     *
+     * @return self
+     */
     public static function validate(
         DynamicResponseModel $renderedTemplate,
         TemplateModel $model,
@@ -71,6 +86,10 @@ final class ValidatedTemplateMessage
         return new self($renderedTemplate, new DynamicResponseModel($model->variables()), $suggestedModel);
     }
 
+    /**
+     * @param DynamicResponseModel<mixed> $model
+     * @param DynamicResponseModel<mixed> $suggestedModel
+     */
     private function parseForValidationErrors(DynamicResponseModel $model, DynamicResponseModel $suggestedModel): void
     {
         foreach ($suggestedModel as $key => $suggestedValue) {
@@ -92,7 +111,10 @@ final class ValidatedTemplateMessage
 
     /**
      * @param string|int $key
+     * @param DynamicResponseModel<mixed> $model
      * @param string|array<mixed> $suggestedValue
+     *
+     * @return bool
      */
     private function isMarkedAsMissing($key, DynamicResponseModel $model, $suggestedValue): bool
     {

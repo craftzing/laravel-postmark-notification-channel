@@ -65,14 +65,14 @@ jobs:
           echo "POSTMARK_TOKEN=${{ secrets.POSTMARK_TOKEN }}" > .env
 
       - name: "Run tests"
-        run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+        run: vendor/bin/phpunit --coverage-clover=coverage.clover
 
       - name: "Run tests & publish code coverage"
         uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
         with:
-          coverageCommand: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+          coverageCommand: vendor/bin/phpunit --coverage-clover=coverage.clover
           coverageLocations: |
             ${{github.workspace}}/*.clover:clover
           debug: true
